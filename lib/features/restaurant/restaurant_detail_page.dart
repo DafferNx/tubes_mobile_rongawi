@@ -19,24 +19,38 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500',
   ];
 
-  final List<Map<String, String>> menuList = const [
+  // Daftar menu dengan atribut spesifik (kalori, waktu, level, kategori)
+  final List<Map<String, dynamic>> menuList = const [
     {
       'name': 'Seblak Komplit Special',
       'price': 'Rp 25.000',
       'image': 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500',
       'description': 'Seblak dengan isian kerupuk, bakso, sosis, ceker, dan telur.',
+      'calories': '450 Kalori',
+      'prepTime': '15 Menit',
+      'spicyLevel': 'Pedas Level 3',
+      'category': 'Makanan Utama',
+      'isFavorite': true,
     },
     {
       'name': 'Mie Ayam Bakso Spesial',
       'price': 'Rp 20.000',
       'image': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500',
       'description': 'Mie kenyal dengan cincangan ayam gurih dan bakso sapi asli.',
+      'calories': '400 Kalori',
+      'prepTime': '12 Menit',
+      'category': 'Makanan Utama',
+      'isFavorite': true,
     },
     {
       'name': 'Es Teh Manis',
       'price': 'Rp 5.000',
       'image': 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500',
       'description': 'Minuman es teh segar manis alami.',
+      'calories': '90 Kalori',
+      'prepTime': '5 Menit',
+      'category': 'Minuman',
+      'isFavorite': false,
     },
   ];
 
@@ -181,6 +195,11 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                                   price: item['price']!,
                                   image: item['image']!,
                                   description: item['description']!,
+                                  calories: item['calories'],
+                                  prepTime: item['prepTime'],
+                                  category: item['category'],
+                                  spicyLevel: item['spicyLevel'],
+                                  isFavorite: item['isFavorite'] ?? false,
                                 ),
                               ),
                             );

@@ -22,11 +22,13 @@ class AppRouter {
     '/filter': (context) => const FilterPage(),
     '/restaurant-detail': (context) => const RestaurantDetailPage(),
     '/menu-detail': (context) => const MenuDetailPage(
-          name: 'Seblak Komplit Special',
-          price: 'Rp 25.000',
-          image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500',
-          description: 'Seblak dengan isian kerupuk, bakso, sosis, ceker, dan telur.',
-        ),
+      name: 'Seblak Komplit Special',
+      price: 'Rp 25.000',
+      image:
+          'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500',
+      description:
+          'Seblak dengan isian kerupuk, bakso, sosis, ceker, dan telur.',
+    ),
     '/maps': (context) => const MapsPage(),
     '/reviews': (context) => const ReviewsPage(),
     '/favorites': (context) => const FavoritesPage(),
