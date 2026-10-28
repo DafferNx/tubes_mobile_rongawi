@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/widgets/category_chip.dart';
 import '../../data/dummy_restaurants.dart';
+import '../profile/edit_profile_page.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   final String initialCategory;
@@ -46,6 +47,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = UserProfileData.isDarkMode;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade400;
+    final dropdownBg = isDark ? const Color(0xFF2A2A2A) : Colors.white;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -56,9 +62,17 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Filter Pencarian',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                UserProfileData.tr(
+                  'Filter Pencarian',
+                  'Search Filters',
+                  'Filter Pilarian',
+                ),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
               TextButton(
                 onPressed: resetFilter,
@@ -72,9 +86,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           const SizedBox(height: 12),
 
           // 1. Filter Kategori Makanan
-          const Text(
-            'Kategori Makanan',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            UserProfileData.tr(
+              'Kategori Makanan',
+              'Food Category',
+              'Kategori Katuangan',
+            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -95,25 +113,41 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           const SizedBox(height: 16),
 
           // 2. Filter Lokasi Bandung (Menggunakan DropdownButton - Modul 6.2.4.3)
-          const Text(
-            'Lokasi di Bandung',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            UserProfileData.tr(
+              'Lokasi di Bandung',
+              'Location in Bandung',
+              'Lokasi di Bandung',
+            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
           ),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade400),
+              color: dropdownBg,
+              border: Border.all(color: borderColor),
               borderRadius: BorderRadius.circular(8),
             ),
             child: DropdownButton<String>(
               value: selectedLocation,
+              dropdownColor: dropdownBg,
               isExpanded: true,
               underline: const SizedBox(),
               items: lokasiBandung.map((lokasi) {
+                final displayLoc = lokasi == 'Semua Lokasi'
+                    ? UserProfileData.tr(
+                        'Semua Lokasi',
+                        'All Locations',
+                        'Sadaya Lokasi',
+                      )
+                    : lokasi;
                 return DropdownMenuItem<String>(
                   value: lokasi,
-                  child: Text(lokasi),
+                  child: Text(
+                    displayLoc,
+                    style: TextStyle(color: textColor),
+                  ),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -131,9 +165,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Rentang Harga',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(
+                UserProfileData.tr(
+                  'Rentang Harga',
+                  'Price Range',
+                  'Rentang Pangaos',
+                ),
+                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
               ),
               Text(
                 'Rp${(priceRange.start / 1000).round()}rb - Rp${(priceRange.end / 1000).round()}rb',
@@ -156,35 +194,56 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               });
             },
           ),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Murah (Rp10rb)', style: TextStyle(fontSize: 12)),
-              Text('Mahal (Rp100rb)', style: TextStyle(fontSize: 12)),
+              Text(
+                UserProfileData.tr(
+                  'Murah (Rp10rb)',
+                  'Affordable (Rp10k)',
+                  'Murah (Rp10rb)',
+                ),
+                style: TextStyle(fontSize: 12, color: textColor),
+              ),
+              Text(
+                UserProfileData.tr(
+                  'Mahal (Rp100rb)',
+                  'Premium (Rp100k)',
+                  'Awis (Rp100rb)',
+                ),
+                style: TextStyle(fontSize: 12, color: textColor),
+              ),
             ],
           ),
           const SizedBox(height: 16),
 
           // 4. Filter Rating
-          const Text(
-            'Rating Minimum',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            UserProfileData.tr(
+              'Rating Minimum',
+              'Minimum Rating',
+              'Rating Minimum',
+            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
           ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             children: ratingList.map((rating) {
-              final label = rating == 0.0 ? 'Semua' : '⭐ $rating+';
+              final label = rating == 0.0
+                  ? UserProfileData.tr('Semua', 'All', 'Sadaya')
+                  : '⭐ $rating+';
               final isSelected = selectedRating == rating;
               return ChoiceChip(
                 label: Text(
                   label,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
+                    color: isSelected ? Colors.white : textColor,
                   ),
                 ),
                 selected: isSelected,
                 selectedColor: Colors.orange,
+                backgroundColor: dropdownBg,
                 onSelected: (_) {
                   setState(() {
                     selectedRating = rating;
@@ -213,9 +272,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   'rating': selectedRating,
                 });
               },
-              child: const Text(
-                'Terapkan Filter',
-                style: TextStyle(
+              child: Text(
+                UserProfileData.tr(
+                  'Terapkan Filter',
+                  'Apply Filter',
+                  'Terapkeun Filter',
+                ),
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
