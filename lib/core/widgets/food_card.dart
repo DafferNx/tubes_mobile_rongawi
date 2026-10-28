@@ -1,78 +1,150 @@
 import 'package:flutter/material.dart';
 
-import '../../data/restaurant_data.dart';
+import '../../data/dummy_restaurants.dart';
+import '../../features/restaurant/restaurant_detail_page.dart';
 
-class FoodCard extends StatelessWidget {
+class FoodCard extends StatefulWidget {
   final Restaurant restaurant;
-  const FoodCard({Key? key, required this.restaurant}) : super(key: key);
+
+  const FoodCard({super.key, required this.restaurant});
+
+  @override
+  State<FoodCard> createState() => _FoodCardState();
+}
+
+class _FoodCardState extends State<FoodCard> {
+  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
-                ),
+    final item = widget.restaurant;
+
+    return GestureDetector(
+      onTap: () {
+        // Navigasi Mengirim Data ke Detail Restoran (Bagian Orang 2) - Modul 7
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RestaurantDetailPage(restaurant: item),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey.shade200),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Gambar Makanan dengan Sudut Membulat (Modul 4.3)
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  restaurant.imageUrl,
-                  height: 120,
+                  item.imageUrl,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: double.infinity,
+                      color: Colors.orange.shade50,
+                      child: const Center(
+                        child: Icon(
+                          Icons.fastfood,
+                          size: 36,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
-              const Positioned(
-                top: 8,
-                right: 8,
-                child: Icon(Icons.favorite_border, color: Colors.white),
+            ),
+            const SizedBox(height: 10),
+
+            // Nama Tempat Makan
+            Text(
+              item.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            const SizedBox(height: 4),
+
+            // Rating & Kategori/Lokasi
+            Row(
               children: [
+                const Icon(Icons.star, color: Colors.amber, size: 15),
+                const SizedBox(width: 4),
                 Text(
-                  restaurant.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  '${item.rating}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
-                SizedBox(height: 3),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.orange, size: 16),
-                    Text(' ${restaurant.rating} • ${restaurant.category}'),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      restaurant.priceRange,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 5),
-                Row(
-                  children: [
-                    const Icon(Icons.location_on, color: Colors.grey, size: 14),
-                    Text(
-                      restaurant.distance,
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                  ],
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    '(${item.location} • ${item.distance})',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.grey, fontSize: 11),
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+
+            // Baris Bawah: Harga di Kiri & Tombol Bulat Orange di Kanan (Sesuai Referensi)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    item.priceRange,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isFavorite = !isFavorite;
+                    });
+                  },
+                  child: CircleAvatar(
+                    radius: 14,
+                    backgroundColor: Colors.orange,
+                    child: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.white,
+                      size: 15,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

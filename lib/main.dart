@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'features/home/home_page.dart'; // Sesuaikan path jika berbeda
+import 'core/theme/app_theme.dart';
+import 'navigation/main_scaffold.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Bandung Foodies',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.orange),
-      home: HomePage(), // Ganti menjadi SearchPage() untuk melihat layar pencarian
+      theme: AppTheme.lightTheme,
+      home: const MainScaffold(),
     );
   }
 }
