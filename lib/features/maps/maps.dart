@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/dummy_restaurants.dart';
+import '../profile/edit_profile_page.dart';
 
 // Palet halaman Maps: satu aksen, teks utama, dan teks pendukung.
 const _accent = Color(0xFFEF6C00);
@@ -20,6 +21,11 @@ class _MapsPageState extends State<MapsPage> {
   String category = 'Semua', query = '', vehicle = 'Motor';
   bool nearby = false, direction = false, started = false;
   Restaurant selected = dummyRestaurants.first;
+
+  bool get _isDark => UserProfileData.isDarkMode;
+  String _tr(String id, String en, [String? su]) =>
+      UserProfileData.tr(id, en, su);
+
   static const positions = [
     Offset(.64, .30),
     Offset(.25, .51),
@@ -55,30 +61,42 @@ class _MapsPageState extends State<MapsPage> {
   @override
   Widget build(BuildContext context) {
     final results = places;
+    final bgColor = _isDark ? const Color(0xFF121212) : Colors.white;
+    final cardColor = _isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final textColor = _isDark ? Colors.white : _ink;
+    final lineColor = _isDark ? Colors.grey.shade800 : _line;
+
     // Tema lokal agar halaman anggota lain tidak ikut berubah.
     return Theme(
       data: Theme.of(context).copyWith(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange).copyWith(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.orange,
+          brightness: _isDark ? Brightness.dark : Brightness.light,
+        ).copyWith(
           primary: _accent,
           onPrimary: Colors.white,
-          surface: Colors.white,
-          onSurface: _ink,
+          surface: cardColor,
+          onSurface: textColor,
           onSurfaceVariant: _muted,
-          primaryContainer: _soft,
+          primaryContainer: _isDark
+              ? Colors.orange.withValues(alpha: 0.2)
+              : _soft,
           onPrimaryContainer: _accent,
-          secondaryContainer: _soft,
+          secondaryContainer: _isDark
+              ? Colors.orange.withValues(alpha: 0.2)
+              : _soft,
           onSecondaryContainer: _accent,
         ),
         chipTheme: ChipThemeData(
-          backgroundColor: Colors.white,
-          selectedColor: _soft,
+          backgroundColor: cardColor,
+          selectedColor: _isDark ? Colors.orange.withValues(alpha: 0.2) : _soft,
           side: BorderSide.none,
           showCheckmark: false,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
-          labelStyle: const TextStyle(
-            color: _ink,
+          labelStyle: TextStyle(
+            color: textColor,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -92,7 +110,7 @@ class _MapsPageState extends State<MapsPage> {
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: bgColor,
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -116,6 +134,7 @@ class _MapsPageState extends State<MapsPage> {
                                       selected,
                                     )],
                                 showRoute: direction,
+                                isDark: _isDark,
                               ),
                             ),
                           ),
@@ -155,12 +174,12 @@ class _MapsPageState extends State<MapsPage> {
                                       style: IconButton.styleFrom(
                                         backgroundColor: e.value == selected
                                             ? _accent
-                                            : Colors.white,
+                                            : cardColor,
                                         foregroundColor: e.value == selected
                                             ? Colors.white
                                             : _accent,
                                         side: BorderSide(
-                                          color: Colors.white,
+                                          color: cardColor,
                                           width: 3,
                                         ),
                                         minimumSize: const Size(40, 40),
@@ -195,7 +214,7 @@ class _MapsPageState extends State<MapsPage> {
                                     vertical: 8,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: cardColor,
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
                                       BoxShadow(
@@ -211,8 +230,16 @@ class _MapsPageState extends State<MapsPage> {
                                     children: [
                                       IconButton(
                                         tooltip: direction
-                                            ? 'Kembali ke peta'
-                                            : 'Lokasi Bandung',
+                                            ? _tr(
+                                                'Kembali ke peta',
+                                                'Back to map',
+                                                'Mulih ka peta',
+                                              )
+                                            : _tr(
+                                                'Lokasi Bandung',
+                                                'Bandung Location',
+                                                'Lokasi Bandung',
+                                              ),
                                         onPressed: () {
                                           if (direction) {
                                             setState(() {
@@ -222,9 +249,13 @@ class _MapsPageState extends State<MapsPage> {
                                           } else {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
-                                                  const SnackBar(
+                                                  SnackBar(
                                                     content: Text(
-                                                      'Lokasi contoh: Bandung, Jawa Barat.',
+                                                      _tr(
+                                                        'Lokasi contoh: Bandung, Jawa Barat.',
+                                                        'Sample location: Bandung, West Java.',
+                                                        'Lokasi conto: Bandung, Jawa Kulon.',
+                                                      ),
                                                     ),
                                                   ),
                                                 );
@@ -246,17 +277,30 @@ class _MapsPageState extends State<MapsPage> {
                                           children: [
                                             Text(
                                               direction
-                                                  ? 'Petunjuk arah'
-                                                  : 'Jelajah kuliner',
-                                              style: const TextStyle(
+                                                  ? _tr(
+                                                      'Petunjuk arah',
+                                                      'Directions',
+                                                      'Pituduh arah',
+                                                    )
+                                                  : _tr(
+                                                      'Jelajah kuliner',
+                                                      'Explore Culinary',
+                                                      'Kotéktak Kuliner',
+                                                    ),
+                                              style: TextStyle(
                                                 fontSize: 17,
                                                 fontWeight: FontWeight.w700,
+                                                color: textColor,
                                               ),
                                             ),
                                             const SizedBox(height: 2),
-                                            const Text(
-                                              'Bandung, Jawa Barat',
-                                              style: TextStyle(
+                                            Text(
+                                              _tr(
+                                                'Bandung, Jawa Barat',
+                                                'Bandung, West Java',
+                                                'Bandung, Jawa Kulon',
+                                              ),
+                                              style: const TextStyle(
                                                 fontSize: 11,
                                                 color: _muted,
                                               ),
@@ -279,15 +323,22 @@ class _MapsPageState extends State<MapsPage> {
                                   const SizedBox(height: 10),
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: cardColor,
                                       borderRadius: BorderRadius.circular(14),
                                     ),
                                     child: TextField(
                                       onChanged: (v) =>
                                           setState(() => query = v),
-                                      style: const TextStyle(fontSize: 13),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: textColor,
+                                      ),
                                       decoration: InputDecoration(
-                                        hintText: 'Cari tempat atau kawasan...',
+                                        hintText: _tr(
+                                          'Cari tempat atau kawasan...',
+                                          'Search spots or areas...',
+                                          'Milari tempat atanapi wewengkon...',
+                                        ),
                                         hintStyle: const TextStyle(
                                           color: _muted,
                                         ),
@@ -319,13 +370,15 @@ class _MapsPageState extends State<MapsPage> {
                                           const SizedBox(width: 6),
                                       itemBuilder: (_, i) => ChoiceChip(
                                         label: Text(
-                                          kategoriKuliner[i],
+                                          kategoriKuliner[i] == 'Semua'
+                                              ? _tr('Semua', 'All', 'Sadaya')
+                                              : kategoriKuliner[i],
                                           style: TextStyle(
                                             fontFamily: 'Roboto',
                                             color:
                                                 category == kategoriKuliner[i]
                                                 ? _accent
-                                                : _ink,
+                                                : textColor,
                                             fontWeight: FontWeight.w600,
                                             fontSize: 12,
                                           ),
@@ -333,7 +386,7 @@ class _MapsPageState extends State<MapsPage> {
                                         side: BorderSide(
                                           color: category == kategoriKuliner[i]
                                               ? _accent
-                                              : _line,
+                                              : lineColor,
                                         ),
                                         selected:
                                             category == kategoriKuliner[i],
@@ -347,15 +400,21 @@ class _MapsPageState extends State<MapsPage> {
                               ],
                             ),
                           ),
-                          const Positioned(
+                          Positioned(
                             left: 18,
                             bottom: 16,
                             child: Text(
-                              'Peta ilustrasi',
+                              _tr(
+                                'Peta ilustrasi',
+                                'Illustrative map',
+                                'Peta ilustrasi',
+                              ),
                               style: TextStyle(
                                 fontSize: 10,
                                 color: _muted,
-                                backgroundColor: Color(0xCCFFFFFF),
+                                backgroundColor: _isDark
+                                    ? const Color(0xCC1E1E1E)
+                                    : const Color(0xCCFFFFFF),
                               ),
                             ),
                           ),
@@ -364,23 +423,31 @@ class _MapsPageState extends State<MapsPage> {
                             bottom: 14,
                             child: FloatingActionButton.small(
                               heroTag: 'maps-location',
-                              tooltip: 'Lokasi contoh saya',
-                              backgroundColor: Colors.white,
+                              tooltip: _tr(
+                                'Lokasi contoh saya',
+                                'My sample location',
+                                'Lokasi conto abdi',
+                              ),
+                              backgroundColor: cardColor,
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               onPressed: () => ScaffoldMessenger.of(context)
                                   .showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                       content: Text(
-                                        'Lokasi contoh: sekitar Gedung Sate, Bandung.',
+                                        _tr(
+                                          'Lokasi contoh: sekitar Gedung Sate, Bandung.',
+                                          'Sample location: near Gedung Sate, Bandung.',
+                                          'Lokasi conto: sakitaran Gedung Sate, Bandung.',
+                                        ),
                                       ),
                                     ),
                                   ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.my_location,
-                                color: _ink,
+                                color: textColor,
                                 size: 21,
                               ),
                             ),
@@ -390,10 +457,10 @@ class _MapsPageState extends State<MapsPage> {
                     ),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 105),
+                      decoration: BoxDecoration(
+                        color: bgColor,
+                        borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(28),
                         ),
                       ),
@@ -404,7 +471,7 @@ class _MapsPageState extends State<MapsPage> {
                             height: 4,
                             margin: const EdgeInsets.only(bottom: 10),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE2E5E3),
+                              color: lineColor,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -422,145 +489,182 @@ class _MapsPageState extends State<MapsPage> {
     );
   }
 
-  Widget placesPanel(List<Restaurant> results) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Expanded(
-            child: Text(
-              nearby ? 'Kuliner terdekat' : 'Di sekitar kamu',
-              style: const TextStyle(
-                color: _ink,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => setState(() => nearby = !nearby),
-            child: Text(
-              nearby ? 'Ringkas' : 'Lihat semua',
-              style: const TextStyle(
-                color: _accent,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-      Text(
-        '${results.length} pilihan kuliner di sekitarmu',
-        style: const TextStyle(color: _muted, fontSize: 12),
-      ),
-      const SizedBox(height: 12),
-      if (results.isEmpty)
-        const Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            'Tempat tidak ditemukan. Coba kata kunci atau kategori lain.',
-          ),
-        )
-      else if (nearby)
-        ...results.map(
-          (r) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: restaurantCard(r),
-          ),
-        )
-      else
-        restaurantCard(results.contains(selected) ? selected : results.first),
-    ],
-  );
-
-  Widget restaurantCard(Restaurant r) => Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: const Color(0xFFF7F8F6),
-      borderRadius: BorderRadius.circular(16),
-    ),
-    child: Column(
+  Widget placesPanel(List<Restaurant> results) {
+    final textColor = _isDark ? Colors.white : _ink;
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Container(
-              height: 64,
-              width: 64,
-              decoration: BoxDecoration(
-                color: _soft,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                r.category == 'Cafe' ? Icons.local_cafe : Icons.restaurant_menu,
-                color: _accent,
-                size: 30,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    r.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${r.category} • ${r.location}',
-                    style: const TextStyle(color: _muted, fontSize: 12),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '★ ${r.rating}  •  ${r.distance}',
-                    style: TextStyle(color: _accent, fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text(r.address, style: const TextStyle(fontSize: 12, color: _muted)),
-        const SizedBox(height: 12),
-        Row(
-          children: [
             Expanded(
               child: Text(
-                r.priceRange,
+                nearby
+                    ? _tr('Kuliner terdekat', 'Nearby Culinary', 'Kuliner Caket')
+                    : _tr('Di sekitar kamu', 'Around You', 'Di Sakitar Anjeun'),
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => setState(() => nearby = !nearby),
+              child: Text(
+                nearby
+                    ? _tr('Ringkas', 'Compact', 'Ringkes')
+                    : _tr('Lihat semua', 'See all', 'Tingali sadaya'),
                 style: const TextStyle(
+                  color: _accent,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            FilledButton.icon(
-              style: FilledButton.styleFrom(
-                backgroundColor: _accent,
-                foregroundColor: Colors.white,
-              ),
-              onPressed: () => preview(r),
-              icon: const Icon(Icons.directions_outlined, size: 18),
-              label: const Text('Lihat rute'),
-            ),
           ],
         ),
+        Text(
+          _tr(
+            '${results.length} pilihan kuliner di sekitarmu',
+            '${results.length} culinary options around you',
+            '${results.length} pilihan kuliner di sakitar anjeun',
+          ),
+          style: const TextStyle(color: _muted, fontSize: 12),
+        ),
+        const SizedBox(height: 12),
+        if (results.isEmpty)
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              _tr(
+                'Tempat tidak ditemukan. Coba kata kunci atau kategori lain.',
+                'No places found. Try another keyword or category.',
+                'Tempat teu kapanggih. Cobi kecap konci atanapi kategori sanés.',
+              ),
+              style: TextStyle(color: textColor),
+            ),
+          )
+        else if (nearby)
+          ...results.map(
+            (r) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: restaurantCard(r),
+            ),
+          )
+        else
+          restaurantCard(results.contains(selected) ? selected : results.first),
       ],
-    ),
-  );
+    );
+  }
+
+  Widget restaurantCard(Restaurant r) {
+    final textColor = _isDark ? Colors.white : _ink;
+    final subBoxColor = _isDark
+        ? const Color(0xFF1E1E1E)
+        : const Color(0xFFF7F8F6);
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: subBoxColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 64,
+                width: 64,
+                decoration: BoxDecoration(
+                  color: _isDark
+                      ? Colors.orange.withValues(alpha: 0.15)
+                      : _soft,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(
+                  r.category == 'Cafe'
+                      ? Icons.local_cafe
+                      : Icons.restaurant_menu,
+                  color: _accent,
+                  size: 30,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      r.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${r.category} • ${r.location}',
+                      style: const TextStyle(color: _muted, fontSize: 12),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '★ ${r.rating}  •  ${r.distance}',
+                      style: const TextStyle(color: _accent, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(r.address, style: const TextStyle(fontSize: 12, color: _muted)),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  r.priceRange,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: textColor,
+                  ),
+                ),
+              ),
+              FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  backgroundColor: _accent,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () => preview(r),
+                icon: const Icon(Icons.directions_outlined, size: 18),
+                label: Text(_tr('Lihat rute', 'View route', 'Tingali rute')),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget directionPanel() {
     final speed = vehicle == 'Jalan kaki' ? 4 : (vehicle == 'Mobil' ? 18 : 24);
     final minutes = (distance(selected) / speed * 60).ceil();
+    final textColor = _isDark ? Colors.white : _ink;
+    final subBoxColor = _isDark
+        ? const Color(0xFF1E1E1E)
+        : const Color(0xFFF7F8F7);
+    final lineColor = _isDark ? Colors.grey.shade800 : _line;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Rute perjalanan',
+        Text(
+          _tr('Rute perjalanan', 'Travel route', 'Rute perjalanan'),
           style: TextStyle(
-            color: _ink,
+            color: textColor,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -569,7 +673,7 @@ class _MapsPageState extends State<MapsPage> {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFFF7F8F7),
+            color: subBoxColor,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
@@ -587,7 +691,7 @@ class _MapsPageState extends State<MapsPage> {
                     width: 1,
                     height: 30,
                     margin: const EdgeInsets.symmetric(vertical: 4),
-                    color: _line,
+                    color: lineColor,
                   ),
                   const Icon(Icons.location_on, size: 19, color: _accent),
                 ],
@@ -597,27 +701,35 @@ class _MapsPageState extends State<MapsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Dari lokasi kamu',
-                      style: TextStyle(color: _muted, fontSize: 11),
+                    Text(
+                      _tr(
+                        'Dari lokasi kamu',
+                        'From your location',
+                        'Ti lokasi anjeun',
+                      ),
+                      style: const TextStyle(color: _muted, fontSize: 11),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
-                      'Sekitar Gedung Sate',
+                    Text(
+                      _tr(
+                        'Sekitar Gedung Sate',
+                        'Near Gedung Sate',
+                        'Sakitaran Gedung Sate',
+                      ),
                       style: TextStyle(
-                        color: _ink,
+                        color: textColor,
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Divider(height: 1, color: _line),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Divider(height: 1, color: lineColor),
                     ),
                     Text(
                       selected.name,
-                      style: const TextStyle(
-                        color: _ink,
+                      style: TextStyle(
+                        color: textColor,
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
@@ -656,10 +768,16 @@ class _MapsPageState extends State<MapsPage> {
                       selected: active,
                       button: true,
                       child: Material(
-                        color: active ? _soft : const Color(0xFFF7F8F7),
+                        color: active
+                            ? (_isDark
+                                  ? Colors.orange.withValues(alpha: 0.2)
+                                  : _soft)
+                            : subBoxColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
-                          side: BorderSide(color: active ? _accent : _line),
+                          side: BorderSide(
+                            color: active ? _accent : lineColor,
+                          ),
                         ),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(14),
@@ -685,7 +803,7 @@ class _MapsPageState extends State<MapsPage> {
                                   item.$1,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: active ? _accent : _ink,
+                                    color: active ? _accent : textColor,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -702,17 +820,21 @@ class _MapsPageState extends State<MapsPage> {
         ),
         const SizedBox(height: 16),
         Text(
-          '$minutes menit • ${selected.distance}',
-          style: const TextStyle(
-            color: _ink,
+          '$minutes ${_tr('menit', 'min', 'menit')} • ${selected.distance}',
+          style: TextStyle(
+            color: textColor,
             fontSize: 24,
             fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
-          'Estimasi contoh, bukan kondisi perjalanan sebenarnya.',
-          style: TextStyle(color: _muted, fontSize: 12),
+        Text(
+          _tr(
+            'Estimasi contoh, bukan kondisi perjalanan sebenarnya.',
+            'Sample estimate, not actual traffic conditions.',
+            'Éstimasi conto, sanés kondisi perjalanan saleresna.',
+          ),
+          style: const TextStyle(color: _muted, fontSize: 12),
         ),
         const SizedBox(height: 16),
         if (started)
@@ -721,11 +843,16 @@ class _MapsPageState extends State<MapsPage> {
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: _soft,
+              color: _isDark ? Colors.orange.withValues(alpha: 0.2) : _soft,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Text(
-              'Simulasi navigasi aktif\nIkuti garis oranye menuju marker tujuan.',
+            child: Text(
+              _tr(
+                'Simulasi navigasi aktif\nIkuti garis oranye menuju marker tujuan.',
+                'Navigation simulation active\nFollow the orange line to the destination marker.',
+                'Simulasi navigasi aktip\nTuturkeun garis oranye nuju tujuan.',
+              ),
+              style: TextStyle(color: textColor),
             ),
           ),
         SizedBox(
@@ -740,7 +867,11 @@ class _MapsPageState extends State<MapsPage> {
             icon: Icon(
               started ? Icons.stop_circle_outlined : Icons.navigation_outlined,
             ),
-            label: Text(started ? 'Akhiri simulasi' : 'Mulai navigasi'),
+            label: Text(
+              started
+                  ? _tr('Akhiri simulasi', 'End simulation', 'ungkas simulasi')
+                  : _tr('Mulai navigasi', 'Start navigation', 'Mimitian navigasi'),
+            ),
           ),
         ),
       ],
@@ -752,12 +883,18 @@ class _MapsPageState extends State<MapsPage> {
 class _MapPainter extends CustomPainter {
   final Offset destination;
   final bool showRoute;
-  const _MapPainter({required this.destination, required this.showRoute});
+  final bool isDark;
+  const _MapPainter({
+    required this.destination,
+    required this.showRoute,
+    this.isDark = false,
+  });
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(
       Offset.zero & size,
-      Paint()..color = const Color(0xFFECEEEA),
+      Paint()
+        ..color = isDark ? const Color(0xFF1A1E1C) : const Color(0xFFECEEEA),
     );
     Offset point(double x, double y) => Offset(x * size.width, y * size.height);
     Offset location(Offset p) =>
@@ -777,7 +914,8 @@ class _MapPainter extends CustomPainter {
           ),
           const Radius.circular(18),
         ),
-        Paint()..color = const Color(0xFFDCE7D4),
+        Paint()
+          ..color = isDark ? const Color(0xFF233026) : const Color(0xFFDCE7D4),
       );
     }
     final river = Path()
@@ -793,12 +931,12 @@ class _MapPainter extends CustomPainter {
     canvas.drawPath(
       river,
       Paint()
-        ..color = const Color(0xFFCCE0E4)
+        ..color = isDark ? const Color(0xFF1F363D) : const Color(0xFFCCE0E4)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 13,
     );
     final road = Paint()
-      ..color = Colors.white
+      ..color = isDark ? const Color(0xFF2B312E) : Colors.white
       ..strokeWidth = 7
       ..strokeCap = StrokeCap.round;
     for (var i = -2; i < 9; i++) {
@@ -809,7 +947,10 @@ class _MapPainter extends CustomPainter {
       final p = TextPainter(
         text: TextSpan(
           text: text,
-          style: const TextStyle(color: Color(0xFF788075), fontSize: 11),
+          style: TextStyle(
+            color: isDark ? Colors.grey.shade400 : const Color(0xFF788075),
+            fontSize: 11,
+          ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
@@ -836,7 +977,7 @@ class _MapPainter extends CustomPainter {
       canvas.drawPath(
         route,
         Paint()
-          ..color = Colors.white
+          ..color = isDark ? const Color(0xFF2B312E) : Colors.white
           ..style = PaintingStyle.stroke
           ..strokeWidth = 9,
       );
@@ -857,5 +998,6 @@ class _MapPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _MapPainter oldDelegate) =>
       oldDelegate.destination != destination ||
-      oldDelegate.showRoute != showRoute;
+      oldDelegate.showRoute != showRoute ||
+      oldDelegate.isDark != isDark;
 }

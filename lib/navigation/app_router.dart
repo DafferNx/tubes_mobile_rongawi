@@ -5,6 +5,7 @@ import '../features/auth/register_page.dart';
 import '../features/favorites/favorites_page.dart';
 import '../features/home/home_page.dart';
 import '../features/maps/maps_page.dart';
+import '../features/profile/edit_profile_page.dart';
 import '../features/profile/profile_page.dart';
 import '../features/restaurant/menu_detail_page.dart';
 import '../features/restaurant/restaurant_detail_page.dart';
@@ -27,5 +28,6 @@ class AppRouter {
     '/login': (context) => const LoginPage(),
     '/register': (context) => const RegisterPage(),
     '/profile': (context) => const ProfilePage(),
+    '/edit-profile': (context) => const EditProfilePage(),
   };
 }

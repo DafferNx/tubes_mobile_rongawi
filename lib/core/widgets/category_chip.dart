@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../features/profile/edit_profile_page.dart';
+
 class CategoryChip extends StatelessWidget {
   final String label;
   final bool isSelected;
@@ -29,17 +31,30 @@ class CategoryChip extends StatelessWidget {
     }
   }
 
+  String _translateCategory(String category) {
+    if (category == 'Semua') {
+      return UserProfileData.tr('Semua', 'All', 'Sadaya');
+    }
+    return category;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isDark = UserProfileData.isDarkMode;
+    final unselectedBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final unselectedBorder =
+        isDark ? Colors.grey.shade800 : Colors.grey.shade200;
+    final unselectedText = isDark ? Colors.white : Colors.black87;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.orange : Colors.white,
+          color: isSelected ? Colors.orange : unselectedBg,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isSelected ? Colors.orange : Colors.grey.shade200,
+            color: isSelected ? Colors.orange : unselectedBorder,
           ),
         ),
         child: Row(
@@ -52,11 +67,11 @@ class CategoryChip extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Text(
-              label,
+              _translateCategory(label),
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? Colors.white : Colors.black87,
+                color: isSelected ? Colors.white : unselectedText,
               ),
             ),
           ],

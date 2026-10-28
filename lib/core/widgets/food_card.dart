@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/dummy_restaurants.dart';
+import '../../features/profile/edit_profile_page.dart';
 import '../../features/restaurant/restaurant_detail_page.dart';
 
 class FoodCard extends StatefulWidget {
@@ -18,6 +19,12 @@ class _FoodCardState extends State<FoodCard> {
   @override
   Widget build(BuildContext context) {
     final item = widget.restaurant;
+    final isDark = UserProfileData.isDarkMode;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final borderColor = isDark ? Colors.grey.shade800 : Colors.grey.shade200;
+    final shadowColor =
+        isDark ? Colors.black.withValues(alpha: 0.35) : Colors.grey.shade200;
+    final textColor = isDark ? Colors.white : Colors.black87;
 
     return GestureDetector(
       onTap: () {
@@ -32,12 +39,12 @@ class _FoodCardState extends State<FoodCard> {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(color: borderColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.shade200,
+              color: shadowColor,
               blurRadius: 6,
               offset: const Offset(0, 3),
             ),
@@ -57,7 +64,9 @@ class _FoodCardState extends State<FoodCard> {
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       width: double.infinity,
-                      color: Colors.orange.shade50,
+                      color: isDark
+                          ? Colors.orange.withValues(alpha: 0.15)
+                          : Colors.orange.shade50,
                       child: const Center(
                         child: Icon(
                           Icons.fastfood,
@@ -77,9 +86,10 @@ class _FoodCardState extends State<FoodCard> {
               item.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
+                color: textColor,
               ),
             ),
             const SizedBox(height: 4),
@@ -91,9 +101,10 @@ class _FoodCardState extends State<FoodCard> {
                 const SizedBox(width: 4),
                 Text(
                   '${item.rating}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
+                    color: textColor,
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -118,10 +129,10 @@ class _FoodCardState extends State<FoodCard> {
                     item.priceRange,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
-                      color: Colors.black87,
+                      color: textColor,
                     ),
                   ),
                 ),

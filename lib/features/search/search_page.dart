@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/widgets/category_chip.dart';
 import '../../core/widgets/food_card.dart';
 import '../../data/dummy_restaurants.dart';
+import '../profile/edit_profile_page.dart';
 import 'filter_bottom_sheet.dart';
 
 class SearchPage extends StatefulWidget {
@@ -57,10 +58,11 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void bukaFilter() async {
+    final isDark = UserProfileData.isDarkMode;
     final hasilFilter = await showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -93,12 +95,18 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final hasilPencarian = getFilteredRestaurants();
     final bisaKembali = Navigator.canPop(context);
+    final isDark = UserProfileData.isDarkMode;
+    final bgColor = isDark ? const Color(0xFF121212) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final chipBg = isDark ? const Color(0xFF1E1E1E) : Colors.grey.shade100;
+    final borderColor = isDark ? Colors.grey.shade800 : Colors.grey.shade300;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: bgColor,
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 105.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -110,10 +118,10 @@ class _SearchPageState extends State<SearchPage> {
                       onTap: () => Navigator.pop(context),
                       child: CircleAvatar(
                         radius: 20,
-                        backgroundColor: Colors.grey.shade100,
-                        child: const Icon(
+                        backgroundColor: chipBg,
+                        child: Icon(
                           Icons.chevron_left,
-                          color: Colors.black87,
+                          color: textColor,
                         ),
                       ),
                     ),
@@ -123,27 +131,35 @@ class _SearchPageState extends State<SearchPage> {
                     child: Container(
                       height: 44,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
+                        color: chipBg,
                         borderRadius: BorderRadius.circular(24),
+                        border: isDark ? Border.all(color: borderColor) : null,
                       ),
                       child: TextField(
                         controller: searchController,
+                        style: TextStyle(color: textColor, fontSize: 13),
                         onChanged: (value) {
                           setState(() {});
                         },
-                        decoration: const InputDecoration(
-                          hintText: 'Cari kuliner Bandung...',
-                          hintStyle: TextStyle(
+                        decoration: InputDecoration(
+                          hintText: UserProfileData.tr(
+                            'Cari kuliner Bandung...',
+                            'Search Bandung culinary...',
+                            'Milari kuliner Bandung...',
+                          ),
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 13,
                           ),
                           prefixIcon: Icon(
                             Icons.search,
-                            color: Colors.black54,
+                            color: isDark ? Colors.grey : Colors.black54,
                             size: 20,
                           ),
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 11),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 11,
+                          ),
                         ),
                       ),
                     ),
@@ -153,7 +169,9 @@ class _SearchPageState extends State<SearchPage> {
                     onTap: bukaFilter,
                     child: CircleAvatar(
                       radius: 20,
-                      backgroundColor: Colors.orange.shade50,
+                      backgroundColor: isDark
+                          ? Colors.orange.withValues(alpha: 0.15)
+                          : Colors.orange.shade50,
                       child: const Icon(
                         Icons.tune,
                         color: Colors.orange,
@@ -166,9 +184,13 @@ class _SearchPageState extends State<SearchPage> {
               const SizedBox(height: 22),
 
               // 2. Section Kategori (Wrap Chip Bergambar - Sesuai "Category" di Referensi)
-              const Text(
-                'Kategori',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              Text(
+                UserProfileData.tr('Kategori', 'Categories', 'Kategori'),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: textColor,
+                ),
               ),
               const SizedBox(height: 12),
               Wrap(
@@ -189,9 +211,17 @@ class _SearchPageState extends State<SearchPage> {
               const SizedBox(height: 22),
 
               // 3. Section Pencarian Populer (Sesuai "Top Searches" di Referensi)
-              const Text(
-                'Pencarian Populer',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              Text(
+                UserProfileData.tr(
+                  'Pencarian Populer',
+                  'Top Searches',
+                  'Pilarian Populér',
+                ),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: textColor,
+                ),
               ),
               const SizedBox(height: 12),
               Wrap(
@@ -210,14 +240,15 @@ class _SearchPageState extends State<SearchPage> {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
+                        color: chipBg,
                         borderRadius: BorderRadius.circular(20),
+                        border: isDark ? Border.all(color: borderColor) : null,
                       ),
                       child: Text(
                         kata,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Colors.black87,
+                          color: textColor,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -232,26 +263,31 @@ class _SearchPageState extends State<SearchPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Kuliner Populer (${hasilPencarian.length})',
-                    style: const TextStyle(
+                    '${UserProfileData.tr('Kuliner Populer', 'Popular Culinary', 'Kuliner Populér')} (${hasilPencarian.length})',
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: textColor,
                     ),
                   ),
                   GestureDetector(
                     onTap: resetPencarian,
                     child: Row(
-                      children: const [
+                      children: [
                         Text(
-                          'Lihat Semua',
-                          style: TextStyle(
+                          UserProfileData.tr(
+                            'Lihat Semua',
+                            'See All',
+                            'Tingali Sadaya',
+                          ),
+                          style: const TextStyle(
                             color: Colors.orange,
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(width: 2),
-                        Icon(
+                        const SizedBox(width: 2),
+                        const Icon(
                           Icons.chevron_right,
                           color: Colors.orange,
                           size: 18,
@@ -273,7 +309,9 @@ class _SearchPageState extends State<SearchPage> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.orange.shade50,
+                            color: isDark
+                                ? Colors.orange.withValues(alpha: 0.15)
+                                : Colors.orange.shade50,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: const Icon(
@@ -283,17 +321,29 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Kuliner tidak ditemukan',
+                        Text(
+                          UserProfileData.tr(
+                            'Kuliner tidak ditemukan',
+                            'No culinary spots found',
+                            'Kuliner teu kapanggih',
+                          ),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
+                            color: textColor,
                           ),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          'Coba gunakan kata kunci atau filter lain.',
-                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        Text(
+                          UserProfileData.tr(
+                            'Coba gunakan kata kunci atau filter lain.',
+                            'Try using different keywords or filters.',
+                            'Cobi nganggo kecap konci atanapi saringan sanés.',
+                          ),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 13,
+                          ),
                         ),
                       ],
                     ),
