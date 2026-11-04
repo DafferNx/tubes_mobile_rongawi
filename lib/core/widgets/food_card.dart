@@ -22,8 +22,9 @@ class _FoodCardState extends State<FoodCard> {
     final isDark = UserProfileData.isDarkMode;
     final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
     final borderColor = isDark ? Colors.grey.shade800 : Colors.grey.shade200;
-    final shadowColor =
-        isDark ? Colors.black.withValues(alpha: 0.35) : Colors.grey.shade200;
+    final shadowColor = isDark
+        ? Colors.black.withValues(alpha: 0.35)
+        : Colors.grey.shade200;
     final textColor = isDark ? Colors.white : Colors.black87;
 
     return GestureDetector(
@@ -57,7 +58,7 @@ class _FoodCardState extends State<FoodCard> {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
+                child: Image.asset(
                   item.imageUrl,
                   width: double.infinity,
                   fit: BoxFit.cover,

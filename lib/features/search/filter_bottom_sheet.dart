@@ -8,12 +8,14 @@ class FilterBottomSheet extends StatefulWidget {
   final String initialCategory;
   final String initialLocation;
   final double initialRating;
+  final RangeValues initialPriceRange;
 
   const FilterBottomSheet({
     super.key,
     this.initialCategory = 'Semua',
     this.initialLocation = 'Semua Lokasi',
     this.initialRating = 0.0,
+    this.initialPriceRange = const RangeValues(10000, 100000),
   });
 
   @override
@@ -24,7 +26,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   late String selectedCategory;
   late String selectedLocation;
   late double selectedRating;
-  RangeValues priceRange = const RangeValues(15000, 50000);
+  late RangeValues priceRange;
 
   final List<double> ratingList = [0.0, 4.0, 4.5, 4.8];
 
@@ -34,6 +36,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     selectedCategory = widget.initialCategory;
     selectedLocation = widget.initialLocation;
     selectedRating = widget.initialRating;
+    priceRange = widget.initialPriceRange;
   }
 
   void resetFilter() {
@@ -41,7 +44,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       selectedCategory = 'Semua';
       selectedLocation = 'Semua Lokasi';
       selectedRating = 0.0;
-      priceRange = const RangeValues(15000, 50000);
+      priceRange = const RangeValues(10000, 100000);
     });
   }
 
@@ -62,16 +65,18 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                UserProfileData.tr(
-                  'Filter Pencarian',
-                  'Search Filters',
-                  'Filter Pilarian',
-                ),
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
+              Expanded(
+                child: Text(
+                  UserProfileData.tr(
+                    'Filter Pencarian',
+                    'Search Filters',
+                    'Filter Pilarian',
+                  ),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
               ),
               TextButton(
@@ -144,10 +149,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     : lokasi;
                 return DropdownMenuItem<String>(
                   value: lokasi,
-                  child: Text(
-                    displayLoc,
-                    style: TextStyle(color: textColor),
-                  ),
+                  child: Text(displayLoc, style: TextStyle(color: textColor)),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -162,8 +164,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           const SizedBox(height: 16),
 
           // 3. Filter Rentang Harga
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            spacing: 16,
+            runSpacing: 8,
             children: [
               Text(
                 UserProfileData.tr(
@@ -194,8 +198,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               });
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            spacing: 16,
+            runSpacing: 8,
             children: [
               Text(
                 UserProfileData.tr(
@@ -270,6 +276,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   'category': selectedCategory,
                   'location': selectedLocation,
                   'rating': selectedRating,
+                  'priceRange': priceRange,
                 });
               },
               child: Text(

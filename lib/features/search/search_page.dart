@@ -12,14 +12,15 @@ class SearchPage extends StatefulWidget {
   const SearchPage({super.key, this.initialCategory = 'Semua'});
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  State<SearchPage> createState() => SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class SearchPageState extends State<SearchPage> {
   final TextEditingController searchController = TextEditingController();
   late String selectedCategory;
   String selectedLocation = 'Semua Lokasi';
   double selectedRating = 0.0;
+  RangeValues selectedPriceRange = const RangeValues(10000, 100000);
 
   final List<String> topSearches = [
     'Seblak Mercon',
@@ -53,13 +54,26 @@ class _SearchPageState extends State<SearchPage> {
           item.location == selectedLocation;
       final cocokRating = item.rating >= selectedRating;
 
-      return cocokNama && cocokKategori && cocokLokasi && cocokRating;
+      final prices = RegExp(r'\d+')
+          .allMatches(item.priceRange)
+          .map((m) => double.parse(m[0]!) * 1000)
+          .toList();
+      final cocokHarga =
+          prices.length < 2 ||
+          (prices.first <= selectedPriceRange.end &&
+              prices.last >= selectedPriceRange.start);
+      return cocokNama &&
+          cocokKategori &&
+          cocokLokasi &&
+          cocokRating &&
+          cocokHarga;
     }).toList();
   }
 
   void bukaFilter() async {
     final isDark = UserProfileData.isDarkMode;
     final hasilFilter = await showModalBottomSheet<Map<String, dynamic>>(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
@@ -70,16 +84,30 @@ class _SearchPageState extends State<SearchPage> {
         initialCategory: selectedCategory,
         initialLocation: selectedLocation,
         initialRating: selectedRating,
+        initialPriceRange: selectedPriceRange,
       ),
     );
 
+    if (!mounted) return;
     if (hasilFilter != null) {
       setState(() {
         selectedCategory = hasilFilter['category'] ?? 'Semua';
         selectedLocation = hasilFilter['location'] ?? 'Semua Lokasi';
         selectedRating = hasilFilter['rating'] ?? 0.0;
+        selectedPriceRange =
+            hasilFilter['priceRange'] ?? const RangeValues(10000, 100000);
       });
     }
+  }
+
+  void applyCategory(String category) {
+    setState(() {
+      searchController.clear();
+      selectedCategory = category;
+      selectedLocation = 'Semua Lokasi';
+      selectedRating = 0;
+      selectedPriceRange = const RangeValues(10000, 100000);
+    });
   }
 
   void resetPencarian() {
@@ -88,6 +116,7 @@ class _SearchPageState extends State<SearchPage> {
       selectedCategory = 'Semua';
       selectedLocation = 'Semua Lokasi';
       selectedRating = 0.0;
+      selectedPriceRange = const RangeValues(10000, 100000);
     });
   }
 
@@ -119,10 +148,7 @@ class _SearchPageState extends State<SearchPage> {
                       child: CircleAvatar(
                         radius: 20,
                         backgroundColor: chipBg,
-                        child: Icon(
-                          Icons.chevron_left,
-                          color: textColor,
-                        ),
+                        child: Icon(Icons.chevron_left, color: textColor),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -262,14 +288,17 @@ class _SearchPageState extends State<SearchPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '${UserProfileData.tr('Kuliner Populer', 'Popular Culinary', 'Kuliner Populér')} (${hasilPencarian.length})',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: textColor,
+                  Expanded(
+                    child: Text(
+                      '${UserProfileData.tr('Kuliner Populer', 'Popular Culinary', 'Kuliner Populér')} (${hasilPencarian.length})',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: textColor,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   GestureDetector(
                     onTap: resetPencarian,
                     child: Row(

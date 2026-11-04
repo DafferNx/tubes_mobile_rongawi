@@ -162,6 +162,7 @@ class _MapsPageState extends State<MapsPage> {
                               )
                               .map(
                                 (e) => Positioned(
+                                  key: ValueKey('marker_${e.key}'),
                                   left:
                                       constraints.maxWidth *
                                           positions[e.key].dx -
@@ -217,6 +218,7 @@ class _MapsPageState extends State<MapsPage> {
                                 ),
                               ),
                           Positioned(
+                            key: const ValueKey('map-search-header'),
                             left: 16,
                             right: 16,
                             top: 12,

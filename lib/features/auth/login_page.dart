@@ -234,12 +234,12 @@ class _LoginPageState extends State<LoginPage> {
       {
         'name': 'Raka Pratama',
         'email': 'raka.foodies@gmail.com',
-        'avatar': 'https://picsum.photos/id/64/300/300',
+        'avatar': 'assets/images/image_13.jpg',
       },
       {
         'name': 'Nadia Putri',
         'email': 'nadia.kulinerbdg@gmail.com',
-        'avatar': 'https://picsum.photos/id/65/300/300',
+        'avatar': 'assets/images/image_14.jpg',
       },
     ];
 
@@ -249,6 +249,7 @@ class _LoginPageState extends State<LoginPage> {
     final textColor = _isDark ? Colors.white : Colors.black87;
 
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       backgroundColor: sheetBg,
       shape: const RoundedRectangleBorder(
@@ -364,7 +365,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Row(
                           children: [
                             ClipOval(
-                              child: Image.network(
+                              child: Image.asset(
                                 akun['avatar']!,
                                 width: 42,
                                 height: 42,
@@ -622,8 +623,11 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10),
 
                     // 6. Baris Ingat Saya & Lupa Password
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      spacing: 12,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         GestureDetector(
                           onTap: () {
@@ -707,17 +711,19 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       children: [
                         Expanded(child: Divider(color: borderColor)),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Text(
-                            _tr(
-                              'atau masuk dengan',
-                              'or sign in with',
-                              'atanapi lebet nganggo',
-                            ),
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              _tr(
+                                'atau masuk dengan',
+                                'or sign in with',
+                                'atanapi lebet nganggo',
+                              ),
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ),
@@ -745,16 +751,18 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             _buildGoogleBadge(),
                             const SizedBox(width: 10),
-                            Text(
-                              _tr(
-                                'Masuk dengan Akun Google',
-                                'Sign in with Google',
-                                'Lebet nganggo Akun Google',
-                              ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: textColor,
+                            Flexible(
+                              child: Text(
+                                _tr(
+                                  'Masuk dengan Akun Google',
+                                  'Sign in with Google',
+                                  'Lebet nganggo Akun Google',
+                                ),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: textColor,
+                                ),
                               ),
                             ),
                           ],
@@ -764,8 +772,11 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 24),
 
                     // 10. Navigasi ke Halaman Register
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 4,
+                      runSpacing: 8,
                       children: [
                         Text(
                           _tr(

@@ -18,9 +18,9 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   bool isFavorite = false;
 
   final List<String> galleryImages = const [
-    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500',
-    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500',
-    'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500',
+    'assets/images/image_03.jpg',
+    'assets/images/image_01.jpg',
+    'assets/images/image_02.jpg',
   ];
 
   // Daftar menu dengan atribut spesifik (kalori, waktu, level, kategori)
@@ -28,8 +28,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     {
       'name': 'Seblak Komplit Special',
       'price': 'Rp 25.000',
-      'image':
-          'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500',
+      'image': 'assets/images/image_05.jpg',
       'description':
           'Seblak dengan isian kerupuk, bakso, sosis, ceker, dan telur.',
       'calories': '450 Kalori',
@@ -41,8 +40,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     {
       'name': 'Mie Ayam Bakso Spesial',
       'price': 'Rp 20.000',
-      'image':
-          'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500',
+      'image': 'assets/images/image_06.jpg',
       'description':
           'Mie kenyal dengan cincangan ayam gurih dan bakso sapi asli.',
       'calories': '400 Kalori',
@@ -53,8 +51,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     {
       'name': 'Es Teh Manis',
       'price': 'Rp 5.000',
-      'image':
-          'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500',
+      'image': 'assets/images/image_04.jpg',
       'description': 'Minuman es teh segar manis alami.',
       'calories': '90 Kalori',
       'prepTime': '5 Menit',
@@ -93,7 +90,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               child: PageView.builder(
                 itemCount: galleryImages.length,
                 itemBuilder: (context, index) {
-                  return Image.network(
+                  return Image.asset(
                     galleryImages[index],
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -119,12 +116,12 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                         ),
                       ),
                       Row(
-                        children: const [
-                          Icon(Icons.star, color: Colors.amber, size: 20),
-                          SizedBox(width: 4),
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 20),
+                          const SizedBox(width: 4),
                           Text(
-                            '4.8',
-                            style: TextStyle(
+                            '${place.rating}',
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
@@ -134,24 +131,17 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Row(
-                    children: const [
-                      Icon(Icons.access_time, size: 16, color: Colors.grey),
-                      SizedBox(width: 6),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 8,
+                    children: [
                       Text(
-                        '10.00 - 22.00 WIB',
-                        style: TextStyle(color: Colors.grey),
+                        '◷ ${place.openHours}',
+                        style: const TextStyle(color: Colors.grey),
                       ),
-                      SizedBox(width: 16),
-                      Icon(
-                        Icons.monetization_on_outlined,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(width: 6),
                       Text(
-                        'Rp 15.000 - Rp 50.000',
-                        style: TextStyle(color: Colors.grey),
+                        place.priceRange,
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
@@ -194,7 +184,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                         child: ListTile(
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
+                            child: Image.asset(
                               item['image']!,
                               width: 60,
                               height: 60,

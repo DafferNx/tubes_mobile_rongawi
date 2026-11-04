@@ -75,7 +75,7 @@ class UserProfileData {
     location: 'Dago',
     bio: 'Pecinta kuliner pedas dan kopi susu gula aren di sudut kota Bandung.',
     favoriteCategory: 'Seblak',
-    avatarUrl: 'https://picsum.photos/id/64/300/300',
+    avatarUrl: 'assets/images/image_13.jpg',
     language: 'Indonesia',
     theme: 'Light',
   );
@@ -134,6 +134,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void _bukaMenuUploadFoto() {
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -236,16 +237,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: const Icon(Icons.link, color: Colors.orange),
                   ),
                   title: const Text(
-                    'Masukkan Link / URL Foto Sendiri',
+                    'Pilih Avatar',
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                   ),
                   subtitle: const Text(
-                    'Gunakan tautan gambar langsung milikmu',
+                    'Pilih foto profil yang tersedia',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   onTap: () {
                     Navigator.pop(sheetContext);
-                    _tampilkanDialogUrlFoto();
+                    _tampilkanPilihanAvatar();
                   },
                 ),
                 if (_selectedAvatar.isNotEmpty) ...[
@@ -295,9 +296,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void _pilihFileDariPerangkat({required bool dariKamera}) {
     final timestamp = DateTime.now().millisecondsSinceEpoch % 10000;
-    final simulatedId = (timestamp % 70) + 10;
     setState(() {
-      _selectedAvatar = 'https://picsum.photos/id/$simulatedId/300/300';
+      _selectedAvatar = dariKamera
+          ? 'assets/images/image_13.jpg'
+          : 'assets/images/image_14.jpg';
       _uploadedFileName = dariKamera
           ? 'CAM_$timestamp.jpg'
           : 'IMG_Gallery_$timestamp.jpg';
@@ -313,74 +315,44 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  void _tampilkanDialogUrlFoto() {
-    final urlController = TextEditingController(text: _selectedAvatar);
-    final urlFormKey = GlobalKey<FormState>();
-
-    showDialog(
+  void _tampilkanPilihanAvatar() {
+    showDialog<void>(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text(
-            'Upload via URL Foto',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          content: Form(
-            key: urlFormKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: TextFormField(
-              controller: urlController,
-              decoration: _buildInputDecoration(
-                hintText: 'https://contoh.com/foto-saya.jpg',
-                icon: Icons.link,
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'URL foto tidak boleh kosong';
-                }
-                if (!value.trim().startsWith('http')) {
-                  return 'Masukkan URL yang diawali http:// atau https://';
-                }
-                return null;
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Batal', style: TextStyle(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
-                if (urlFormKey.currentState!.validate()) {
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Pilih avatar'),
+        content: Wrap(
+          spacing: 16,
+          children: [
+            for (final asset in [
+              'assets/images/image_13.jpg',
+              'assets/images/image_14.jpg',
+            ])
+              InkWell(
+                onTap: () {
                   setState(() {
-                    _selectedAvatar = urlController.text.trim();
-                    _uploadedFileName = 'Custom_URL_Photo.jpg';
+                    _selectedAvatar = asset;
+                    _uploadedFileName = null;
                   });
                   Navigator.pop(dialogContext);
-                }
-              },
-              child: const Text(
-                'Gunakan Foto',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                },
+                child: ClipOval(
+                  child: Image.asset(
+                    asset,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
           ],
-        );
-      },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Batal'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -494,7 +466,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           color: Colors.orange,
                                         ),
                                       )
-                                    : Image.network(
+                                    : Image.asset(
                                         _selectedAvatar,
                                         width: 96,
                                         height: 96,

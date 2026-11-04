@@ -13,6 +13,42 @@ import '../features/search/search_page.dart';
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
 
+  static void showSearch(
+    BuildContext context, {
+    String? category,
+    bool openFilter = false,
+  }) {
+    final shell = context.findAncestorStateOfType<_MainScaffoldState>();
+    if (shell == null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(
+          builder: (_) => SearchPage(initialCategory: category ?? 'Semua'),
+        ),
+      );
+      return;
+    }
+    shell._openTab(1);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!shell.mounted) return;
+      final search = shell._searchKey.currentState;
+      if (category != null) search?.applyCategory(category);
+      if (openFilter) search?.bukaFilter();
+    });
+  }
+
+  static void showFavorites(BuildContext context) {
+    final shell = context.findAncestorStateOfType<_MainScaffoldState>();
+    if (shell != null) {
+      shell._openTab(3);
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (_) => const FavoritesPage()),
+      );
+    }
+  }
+
   static void showRoute(BuildContext context, Restaurant place) {
     final shell = context.findAncestorStateOfType<_MainScaffoldState>();
     if (shell == null) {
@@ -34,10 +70,22 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0;
   Restaurant? _mapDestination;
+  final _searchKey = GlobalKey<SearchPageState>();
+
+  void _openTab(int index) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+    setState(() {
+      _selectedIndex = index;
+      _visitedTabs.add(index);
+    });
+  }
+
   final _navigatorKeys = List.generate(5, (_) => GlobalKey<NavigatorState>());
   final _visitedTabs = <int>{0};
 
   void _showRoute(Restaurant place) {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       _mapDestination = place;
       _navigatorKeys[2] = GlobalKey<NavigatorState>();
@@ -46,21 +94,23 @@ class _MainScaffoldState extends State<MainScaffold> {
     });
   }
 
+  Widget _tabPage(int index) {
+    final pages = [
+      const HomePage(),
+      SearchPage(key: _searchKey),
+      MapsPage(initialRestaurant: _mapDestination),
+      const FavoritesPage(),
+      const ProfilePage(),
+    ];
+    return pages[index];
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
       valueListenable: UserProfileData.settingsNotifier,
       builder: (context, _, _) {
         final isDark = UserProfileData.isDarkMode;
-
-        // Daftar 5 Halaman Utama sesuai BottomNavigationBar (Modul 6.2.3.2)
-        final pages = [
-          HomePage(),
-          SearchPage(),
-          MapsPage(initialRestaurant: _mapDestination),
-          FavoritesPage(),
-          ProfilePage(),
-        ];
 
         final navItems = [
           _NavItemData(
@@ -100,7 +150,7 @@ class _MainScaffoldState extends State<MainScaffold> {
               Positioned.fill(
                 child: IndexedStack(
                   index: _selectedIndex,
-                  children: List.generate(pages.length, (index) {
+                  children: List.generate(navItems.length, (index) {
                     if (!_visitedTabs.contains(index)) {
                       return const SizedBox.shrink();
                     }
@@ -111,7 +161,10 @@ class _MainScaffoldState extends State<MainScaffold> {
                       child: Navigator(
                         key: _navigatorKeys[index],
                         onGenerateRoute: (_) => MaterialPageRoute<void>(
-                          builder: (_) => pages[index],
+                          builder: (_) => ValueListenableBuilder<int>(
+                            valueListenable: UserProfileData.settingsNotifier,
+                            builder: (_, _, _) => _tabPage(index),
+                          ),
                         ),
                       ),
                     );
@@ -120,129 +173,137 @@ class _MainScaffoldState extends State<MainScaffold> {
               ),
 
               // 2. Floating Navbar Semi-Transparan dengan Animasi Sliding Pill
-              Positioned(
-                left: 16,
-                right: 16,
-                bottom: 12,
-                child: SafeArea(
-                  top: false,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: isDark
-                              ? Colors.black.withValues(alpha: 0.45)
-                              : Colors.black.withValues(alpha: 0.09),
-                          blurRadius: 22,
-                          spreadRadius: 0,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                        child: Container(
-                          height: 68,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
+              if (MediaQuery.viewInsetsOf(context).bottom == 0)
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  bottom: 12,
+                  child: SafeArea(
+                    top: false,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
                             color: isDark
-                                ? const Color(0xFF1E1E1E)
-                                      .withValues(alpha: 0.75)
-                                : Colors.white.withValues(alpha: 0.78),
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: isDark
-                                  ? Colors.white.withValues(alpha: 0.12)
-                                  : Colors.white.withValues(alpha: 0.65),
-                              width: 1.2,
-                            ),
+                                ? Colors.black.withValues(alpha: 0.45)
+                                : Colors.black.withValues(alpha: 0.09),
+                            blurRadius: 22,
+                            spreadRadius: 0,
+                            offset: const Offset(0, 8),
                           ),
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              final itemWidth = constraints.maxWidth / 5;
-                              return Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Kapsul Oranye yang Meluncur Tepat di Tengah Setiap Item
-                                  AnimatedPositioned(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeOutCubic,
-                                    left: (_selectedIndex * itemWidth) + 3,
-                                    top: 0,
-                                    bottom: 0,
-                                    width: itemWidth - 6,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFFFF9800),
-                                            Color(0xFFF57C00),
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
-                                        borderRadius: BorderRadius.circular(22),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.orange.withValues(
-                                              alpha: 0.35,
-                                            ),
-                                            blurRadius: 10,
-                                            offset: const Offset(0, 4),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                          child: Container(
+                            height: 68,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? const Color(0xFF1E1E1E)
+                                        .withValues(alpha: 0.75)
+                                  : Colors.white.withValues(alpha: 0.78),
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(
+                                color: isDark
+                                    ? Colors.white.withValues(alpha: 0.12)
+                                    : Colors.white.withValues(alpha: 0.65),
+                                width: 1.2,
+                              ),
+                            ),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                final itemWidth = constraints.maxWidth / 5;
+                                return Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    // Kapsul Oranye yang Meluncur Tepat di Tengah Setiap Item
+                                    AnimatedPositioned(
+                                      duration: const Duration(
+                                        milliseconds: 300,
+                                      ),
+                                      curve: Curves.easeOutCubic,
+                                      left: (_selectedIndex * itemWidth) + 3,
+                                      top: 0,
+                                      bottom: 0,
+                                      width: itemWidth - 6,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xFFFF9800),
+                                              Color(0xFFF57C00),
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
                                           ),
-                                        ],
+                                          borderRadius: BorderRadius.circular(
+                                            22,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.orange.withValues(
+                                                alpha: 0.35,
+                                              ),
+                                              blurRadius: 10,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
 
-                                  // Daftar Item Menu Navbar di Atas Sliding Pill
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: List.generate(navItems.length, (
-                                      index,
-                                    ) {
-                                      final item = navItems[index];
-                                      final isSelected =
-                                          _selectedIndex == index;
-                                      return Expanded(
-                                        child: _buildAnimatedNavItem(
-                                          item: item,
-                                          isSelected: isSelected,
-                                          isDark: isDark,
-                                          onTap: () {
-                                            if (_selectedIndex == index) {
-                                              _navigatorKeys[index].currentState
-                                                  ?.popUntil(
-                                                    (route) => route.isFirst,
-                                                  );
-                                              return;
-                                            }
-                                            setState(() {
-                                              _selectedIndex = index;
-                                              _visitedTabs.add(index);
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              );
-                            },
+                                    // Daftar Item Menu Navbar di Atas Sliding Pill
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: List.generate(navItems.length, (
+                                        index,
+                                      ) {
+                                        final item = navItems[index];
+                                        final isSelected =
+                                            _selectedIndex == index;
+                                        return Expanded(
+                                          child: _buildAnimatedNavItem(
+                                            item: item,
+                                            isSelected: isSelected,
+                                            isDark: isDark,
+                                            onTap: () {
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                              if (_selectedIndex == index) {
+                                                _navigatorKeys[index]
+                                                    .currentState
+                                                    ?.popUntil(
+                                                      (route) => route.isFirst,
+                                                    );
+                                                return;
+                                              }
+                                              setState(() {
+                                                _selectedIndex = index;
+                                                _visitedTabs.add(index);
+                                              });
+                                            },
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         );
