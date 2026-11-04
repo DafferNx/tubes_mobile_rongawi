@@ -108,50 +108,54 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        UserProfileData.tr(
-                          'Lokasi Kuliner',
-                          'Culinary Location',
-                          'Lokasi Kuliner',
-                        ),
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.orange,
-                            size: 18,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          UserProfileData.tr(
+                            'Lokasi Kuliner',
+                            'Culinary Location',
+                            'Lokasi Kuliner',
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            UserProfileData.tr(
-                              'Bandung, Jawa Barat',
-                              'Bandung, West Java',
-                              'Bandung, Jawa Kulon',
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.orange,
+                              size: 18,
                             ),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                UserProfileData.tr(
+                                  'Bandung, Jawa Barat',
+                                  'Bandung, West Java',
+                                  'Bandung, Jawa Kulon',
+                                ),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: textColor,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 18,
                               color: textColor,
                             ),
-                          ),
-                          const SizedBox(width: 4),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 18,
-                            color: textColor,
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -246,9 +250,7 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const SearchPage(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const SearchPage()),
                   );
                 },
                 child: Container(
@@ -287,11 +289,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         },
-                        child: Icon(
-                          Icons.tune,
-                          color: textColor,
-                          size: 20,
-                        ),
+                        child: Icon(Icons.tune, color: textColor, size: 20),
                       ),
                     ],
                   ),
@@ -306,9 +304,7 @@ class _HomePageState extends State<HomePage> {
                 onTapViewAll: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const SearchPage(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const SearchPage()),
                   );
                 },
               ),
@@ -458,12 +454,14 @@ class _HomePageState extends State<HomePage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-            color: textColor,
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
           ),
         ),
         GestureDetector(

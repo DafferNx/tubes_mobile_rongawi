@@ -12,7 +12,7 @@ class MenuDetailPage extends StatelessWidget {
   final bool isFavorite;
 
   const MenuDetailPage({
-    Key? key,
+    super.key,
     required this.name,
     required this.price,
     required this.image,
@@ -22,12 +22,13 @@ class MenuDetailPage extends StatelessWidget {
     this.category,
     this.spicyLevel,
     this.isFavorite = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 112),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,7 +44,11 @@ class MenuDetailPage extends StatelessWidget {
                       height: 320,
                       color: Colors.grey[300],
                       child: const Center(
-                        child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                        child: Icon(
+                          Icons.broken_image,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
                       ),
                     );
                   },
@@ -55,9 +60,9 @@ class MenuDetailPage extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.4),
+                        Colors.black.withValues(alpha: 0.4),
                         Colors.transparent,
-                        Colors.black.withOpacity(0.6),
+                        Colors.black.withValues(alpha: 0.6),
                       ],
                     ),
                   ),
@@ -66,7 +71,7 @@ class MenuDetailPage extends StatelessWidget {
                   top: 40,
                   left: 16,
                   child: CircleAvatar(
-                    backgroundColor: Colors.black.withOpacity(0.5),
+                    backgroundColor: Colors.black.withValues(alpha: 0.5),
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
@@ -127,15 +132,35 @@ class MenuDetailPage extends StatelessWidget {
                       runSpacing: 8,
                       children: [
                         if (category != null)
-                          _buildInfoBadge(Icons.category_outlined, category!, Colors.purple),
+                          _buildInfoBadge(
+                            Icons.category_outlined,
+                            category!,
+                            Colors.purple,
+                          ),
                         if (calories != null)
-                          _buildInfoBadge(Icons.local_fire_department, calories!, Colors.orange),
+                          _buildInfoBadge(
+                            Icons.local_fire_department,
+                            calories!,
+                            Colors.orange,
+                          ),
                         if (prepTime != null)
-                          _buildInfoBadge(Icons.access_time, prepTime!, Colors.blue),
+                          _buildInfoBadge(
+                            Icons.access_time,
+                            prepTime!,
+                            Colors.blue,
+                          ),
                         if (spicyLevel != null)
-                          _buildInfoBadge(Icons.bolt, spicyLevel!, Colors.deepOrange),
+                          _buildInfoBadge(
+                            Icons.bolt,
+                            spicyLevel!,
+                            Colors.deepOrange,
+                          ),
                         if (isFavorite)
-                          _buildInfoBadge(Icons.favorite, 'Favorit', Colors.red),
+                          _buildInfoBadge(
+                            Icons.favorite,
+                            'Favorit',
+                            Colors.red,
+                          ),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -178,7 +203,10 @@ class MenuDetailPage extends StatelessWidget {
                           Expanded(
                             child: Text(
                               '"Menu favorit dan banyak dipesan karena rasanya yang pas di lidah."',
-                              style: TextStyle(fontStyle: FontStyle.italic, color: Colors.black87),
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.black87,
+                              ),
                             ),
                           ),
                         ],
@@ -199,7 +227,7 @@ class MenuDetailPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -209,7 +237,11 @@ class MenuDetailPage extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             label,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
           ),
         ],
       ),

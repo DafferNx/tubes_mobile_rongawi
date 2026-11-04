@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'location_detail_page.dart';
+import '../../core/widgets/route_choices.dart';
+
 import '../../data/dummy_restaurants.dart';
 import '../profile/edit_profile_page.dart';
 
@@ -12,7 +15,8 @@ const _line = Color(0xFFE5E9E6);
 
 /// Peta dan rute ilustrasi: seluruh data lokal, tanpa API atau GPS.
 class MapsPage extends StatefulWidget {
-  const MapsPage({super.key});
+  final Restaurant? initialRestaurant;
+  const MapsPage({super.key, this.initialRestaurant});
   @override
   State<MapsPage> createState() => _MapsPageState();
 }
@@ -21,6 +25,15 @@ class _MapsPageState extends State<MapsPage> {
   String category = 'Semua', query = '', vehicle = 'Motor';
   bool nearby = false, direction = false, started = false;
   Restaurant selected = dummyRestaurants.first;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialRestaurant != null) {
+      selected = widget.initialRestaurant!;
+      direction = true;
+    }
+  }
 
   bool get _isDark => UserProfileData.isDarkMode;
   String _tr(String id, String en, [String? su]) =>
@@ -69,24 +82,25 @@ class _MapsPageState extends State<MapsPage> {
     // Tema lokal agar halaman anggota lain tidak ikut berubah.
     return Theme(
       data: Theme.of(context).copyWith(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.orange,
-          brightness: _isDark ? Brightness.dark : Brightness.light,
-        ).copyWith(
-          primary: _accent,
-          onPrimary: Colors.white,
-          surface: cardColor,
-          onSurface: textColor,
-          onSurfaceVariant: _muted,
-          primaryContainer: _isDark
-              ? Colors.orange.withValues(alpha: 0.2)
-              : _soft,
-          onPrimaryContainer: _accent,
-          secondaryContainer: _isDark
-              ? Colors.orange.withValues(alpha: 0.2)
-              : _soft,
-          onSecondaryContainer: _accent,
-        ),
+        colorScheme:
+            ColorScheme.fromSeed(
+              seedColor: Colors.orange,
+              brightness: _isDark ? Brightness.dark : Brightness.light,
+            ).copyWith(
+              primary: _accent,
+              onPrimary: Colors.white,
+              surface: cardColor,
+              onSurface: textColor,
+              onSurfaceVariant: _muted,
+              primaryContainer: _isDark
+                  ? Colors.orange.withValues(alpha: 0.2)
+                  : _soft,
+              onPrimaryContainer: _accent,
+              secondaryContainer: _isDark
+                  ? Colors.orange.withValues(alpha: 0.2)
+                  : _soft,
+              onSecondaryContainer: _accent,
+            ),
         chipTheme: ChipThemeData(
           backgroundColor: cardColor,
           selectedColor: _isDark ? Colors.orange.withValues(alpha: 0.2) : _soft,
@@ -229,7 +243,9 @@ class _MapsPageState extends State<MapsPage> {
                                   child: Row(
                                     children: [
                                       IconButton(
-                                        tooltip: direction
+                                        tooltip:
+                                            (direction ||
+                                                Navigator.canPop(context))
                                             ? _tr(
                                                 'Kembali ke peta',
                                                 'Back to map',
@@ -241,10 +257,13 @@ class _MapsPageState extends State<MapsPage> {
                                                 'Lokasi Bandung',
                                               ),
                                         onPressed: () {
+                                          if (Navigator.canPop(context)) {
+                                            Navigator.pop(context);
+                                            return;
+                                          }
                                           if (direction) {
                                             setState(() {
                                               direction = false;
-                                              started = false;
                                             });
                                           } else {
                                             ScaffoldMessenger.of(context)
@@ -252,7 +271,7 @@ class _MapsPageState extends State<MapsPage> {
                                                   SnackBar(
                                                     content: Text(
                                                       _tr(
-                                                        'Lokasi contoh: Bandung, Jawa Barat.',
+                                                        'Lokasi Anda: Bandung, Jawa Barat.',
                                                         'Sample location: Bandung, West Java.',
                                                         'Lokasi conto: Bandung, Jawa Kulon.',
                                                       ),
@@ -262,7 +281,8 @@ class _MapsPageState extends State<MapsPage> {
                                           }
                                         },
                                         icon: Icon(
-                                          direction
+                                          (direction ||
+                                                  Navigator.canPop(context))
                                               ? Icons.arrow_back
                                               : Icons.location_on_outlined,
                                           color: _accent,
@@ -424,7 +444,7 @@ class _MapsPageState extends State<MapsPage> {
                             child: FloatingActionButton.small(
                               heroTag: 'maps-location',
                               tooltip: _tr(
-                                'Lokasi contoh saya',
+                                'Lokasi saya',
                                 'My sample location',
                                 'Lokasi conto abdi',
                               ),
@@ -438,7 +458,7 @@ class _MapsPageState extends State<MapsPage> {
                                     SnackBar(
                                       content: Text(
                                         _tr(
-                                          'Lokasi contoh: sekitar Gedung Sate, Bandung.',
+                                          'Lokasi Anda: sekitar Gedung Sate, Bandung.',
                                           'Sample location: near Gedung Sate, Bandung.',
                                           'Lokasi conto: sakitaran Gedung Sate, Bandung.',
                                         ),
@@ -457,7 +477,7 @@ class _MapsPageState extends State<MapsPage> {
                     ),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 105),
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 112),
                       decoration: BoxDecoration(
                         color: bgColor,
                         borderRadius: const BorderRadius.vertical(
@@ -499,7 +519,11 @@ class _MapsPageState extends State<MapsPage> {
             Expanded(
               child: Text(
                 nearby
-                    ? _tr('Kuliner terdekat', 'Nearby Culinary', 'Kuliner Caket')
+                    ? _tr(
+                        'Kuliner terdekat',
+                        'Nearby Culinary',
+                        'Kuliner Caket',
+                      )
                     : _tr('Di sekitar kamu', 'Around You', 'Di Sakitar Anjeun'),
                 style: TextStyle(
                   color: textColor,
@@ -620,30 +644,23 @@ class _MapsPageState extends State<MapsPage> {
           ),
           const SizedBox(height: 12),
           Text(r.address, style: const TextStyle(fontSize: 12, color: _muted)),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  r.priceRange,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: textColor,
-                  ),
-                ),
+          TextButton.icon(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => LocationDetailPage(restaurant: r),
               ),
-              FilledButton.icon(
-                style: FilledButton.styleFrom(
-                  backgroundColor: _accent,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () => preview(r),
-                icon: const Icon(Icons.directions_outlined, size: 18),
-                label: Text(_tr('Lihat rute', 'View route', 'Tingali rute')),
-              ),
-            ],
+            ),
+            icon: const Icon(Icons.info_outline),
+            label: const Text('Lihat detail tempat'),
           ),
+          const SizedBox(height: 12),
+          Text(
+            r.priceRange,
+            style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          RouteChoices(restaurant: r, onRoute: () => preview(r)),
         ],
       ),
     );
@@ -775,15 +792,12 @@ class _MapsPageState extends State<MapsPage> {
                             : subBoxColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
-                          side: BorderSide(
-                            color: active ? _accent : lineColor,
-                          ),
+                          side: BorderSide(color: active ? _accent : lineColor),
                         ),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(14),
                           onTap: () => setState(() {
                             vehicle = item.$1;
-                            started = false;
                           }),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -830,49 +844,21 @@ class _MapsPageState extends State<MapsPage> {
         const SizedBox(height: 4),
         Text(
           _tr(
-            'Estimasi contoh, bukan kondisi perjalanan sebenarnya.',
-            'Sample estimate, not actual traffic conditions.',
+            'Estimasi waktu dapat berubah sesuai kondisi perjalanan.',
+            'Travel time may vary depending on road conditions.',
             'Éstimasi conto, sanés kondisi perjalanan saleresna.',
           ),
           style: const TextStyle(color: _muted, fontSize: 12),
         ),
         const SizedBox(height: 16),
-        if (started)
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: _isDark ? Colors.orange.withValues(alpha: 0.2) : _soft,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              _tr(
-                'Simulasi navigasi aktif\nIkuti garis oranye menuju marker tujuan.',
-                'Navigation simulation active\nFollow the orange line to the destination marker.',
-                'Simulasi navigasi aktip\nTuturkeun garis oranye nuju tujuan.',
-              ),
-              style: TextStyle(color: textColor),
-            ),
-          ),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton.icon(
-            style: FilledButton.styleFrom(
-              backgroundColor: _accent,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-            onPressed: () => setState(() => started = !started),
-            icon: Icon(
-              started ? Icons.stop_circle_outlined : Icons.navigation_outlined,
-            ),
-            label: Text(
-              started
-                  ? _tr('Akhiri simulasi', 'End simulation', 'ungkas simulasi')
-                  : _tr('Mulai navigasi', 'Start navigation', 'Mimitian navigasi'),
-            ),
-          ),
+        if (started) ...[
+          const Text('Navigasi aktif. Ikuti garis oranye menuju tujuan.'),
+          const SizedBox(height: 12),
+        ],
+        RouteChoices(
+          restaurant: selected,
+          routeLabel: started ? 'Akhiri navigasi' : 'Mulai navigasi',
+          onRoute: () => setState(() => started = !started),
         ),
       ],
     );

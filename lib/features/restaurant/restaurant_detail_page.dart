@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'menu_detail_page.dart';
+import '../../data/dummy_restaurants.dart';
+import '../../core/widgets/route_choices.dart';
+import '../../navigation/main_scaffold.dart';
 
 class RestaurantDetailPage extends StatefulWidget {
-  final dynamic restaurant;
+  final Restaurant? restaurant;
 
-  const RestaurantDetailPage({Key? key, this.restaurant}) : super(key: key);
+  const RestaurantDetailPage({super.key, this.restaurant});
 
   @override
   State<RestaurantDetailPage> createState() => _RestaurantDetailPageState();
@@ -24,8 +28,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     {
       'name': 'Seblak Komplit Special',
       'price': 'Rp 25.000',
-      'image': 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500',
-      'description': 'Seblak dengan isian kerupuk, bakso, sosis, ceker, dan telur.',
+      'image':
+          'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500',
+      'description':
+          'Seblak dengan isian kerupuk, bakso, sosis, ceker, dan telur.',
       'calories': '450 Kalori',
       'prepTime': '15 Menit',
       'spicyLevel': 'Pedas Level 3',
@@ -35,8 +41,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     {
       'name': 'Mie Ayam Bakso Spesial',
       'price': 'Rp 20.000',
-      'image': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500',
-      'description': 'Mie kenyal dengan cincangan ayam gurih dan bakso sapi asli.',
+      'image':
+          'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500',
+      'description':
+          'Mie kenyal dengan cincangan ayam gurih dan bakso sapi asli.',
       'calories': '400 Kalori',
       'prepTime': '12 Menit',
       'category': 'Makanan Utama',
@@ -45,7 +53,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
     {
       'name': 'Es Teh Manis',
       'price': 'Rp 5.000',
-      'image': 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500',
+      'image':
+          'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500',
       'description': 'Minuman es teh segar manis alami.',
       'calories': '90 Kalori',
       'prepTime': '5 Menit',
@@ -56,6 +65,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final place = widget.restaurant ?? dummyRestaurants.first;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Restoran'),
@@ -74,6 +84,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
         ],
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 112),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -100,7 +111,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     children: [
                       Expanded(
                         child: Text(
-                          widget.restaurant?.name ?? 'Warung Kuliner Bandung',
+                          place.name,
                           style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -127,34 +138,44 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     children: const [
                       Icon(Icons.access_time, size: 16, color: Colors.grey),
                       SizedBox(width: 6),
-                      Text('10.00 - 22.00 WIB', style: TextStyle(color: Colors.grey)),
+                      Text(
+                        '10.00 - 22.00 WIB',
+                        style: TextStyle(color: Colors.grey),
+                      ),
                       SizedBox(width: 16),
-                      Icon(Icons.monetization_on_outlined, size: 16, color: Colors.grey),
+                      Icon(
+                        Icons.monetization_on_outlined,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                       SizedBox(width: 6),
-                      Text('Rp 15.000 - Rp 50.000', style: TextStyle(color: Colors.grey)),
+                      Text(
+                        'Rp 15.000 - Rp 50.000',
+                        style: TextStyle(color: Colors.grey),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
                   Row(
-                    children: const [
-                      Icon(Icons.location_on, size: 16, color: Colors.redAccent),
-                      SizedBox(width: 6),
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: Colors.redAccent,
+                      ),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          'Jl. Ciumbuleuit No. 42, Bandung',
-                          style: TextStyle(fontSize: 14),
+                          place.address,
+                          style: const TextStyle(fontSize: 14),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.map),
-                      label: const Text('Lihat Lokasi'),
-                    ),
+                  RouteChoices(
+                    restaurant: place,
+                    onRoute: () => MainScaffold.showRoute(context, place),
                   ),
                   const SizedBox(height: 24),
                   const Text(
@@ -185,7 +206,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(item['price']!),
-                          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,
