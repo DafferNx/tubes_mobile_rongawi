@@ -67,8 +67,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _selesaiLogin() {
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const MainScaffold()),
       (route) => false,
     );

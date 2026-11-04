@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../community/demo_pages.dart';
+
 import '../auth/login_page.dart';
 import '../favorites/favorites_page.dart';
 import '../reviews/reviews_page.dart';
@@ -53,8 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              backgroundColor:
-                  _isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              backgroundColor: _isDark ? const Color(0xFF1E1E1E) : Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -219,8 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              backgroundColor:
-                  _isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              backgroundColor: _isDark ? const Color(0xFF1E1E1E) : Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -388,8 +388,7 @@ class _ProfilePageState extends State<ProfilePage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              backgroundColor:
-                  _isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              backgroundColor: _isDark ? const Color(0xFF1E1E1E) : Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -658,46 +657,52 @@ class _ProfilePageState extends State<ProfilePage> {
                 ...daftarBahasa.map((item) {
                   final nama = item['label']!;
                   final aktif = _lang == nama;
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundColor: aktif
-                          ? Colors.orange
-                          : Colors.orange.shade50,
-                      child: Icon(
-                        Icons.language,
-                        color: aktif ? Colors.white : Colors.orange,
-                        size: 20,
-                      ),
-                    ),
-                    title: Text(
-                      nama,
-                      style: TextStyle(
-                        fontWeight: aktif ? FontWeight.bold : FontWeight.w500,
-                        fontSize: 14,
-                        color: textColor,
-                      ),
-                    ),
-                    subtitle: Text(
-                      item['sub']!,
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    trailing: aktif
-                        ? const Icon(Icons.check_circle, color: Colors.orange)
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        UserProfileData.currentUser.language = nama;
-                      });
-                      Navigator.pop(sheetContext);
-                      _tampilkanNotifikasiSukses(
-                        _tr(
-                          'Bahasa diubah ke $nama',
-                          'Language changed to $nama',
-                          'Basa diganti ka $nama',
+                  return Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        backgroundColor: aktif
+                            ? Colors.orange
+                            : Colors.orange.shade50,
+                        child: Icon(
+                          Icons.language,
+                          color: aktif ? Colors.white : Colors.orange,
+                          size: 20,
                         ),
-                      );
-                    },
+                      ),
+                      title: Text(
+                        nama,
+                        style: TextStyle(
+                          fontWeight: aktif ? FontWeight.bold : FontWeight.w500,
+                          fontSize: 14,
+                          color: textColor,
+                        ),
+                      ),
+                      subtitle: Text(
+                        item['sub']!,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                      trailing: aktif
+                          ? const Icon(Icons.check_circle, color: Colors.orange)
+                          : null,
+                      onTap: () {
+                        setState(() {
+                          UserProfileData.currentUser.language = nama;
+                        });
+                        Navigator.pop(sheetContext);
+                        _tampilkanNotifikasiSukses(
+                          _tr(
+                            'Bahasa diubah ke $nama',
+                            'Language changed to $nama',
+                            'Basa diganti ka $nama',
+                          ),
+                        );
+                      },
+                    ),
                   );
                 }),
               ],
@@ -712,11 +717,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final daftarTema = [
       {
         'label': 'Light',
-        'sub': _tr(
-          'Tampilan terang',
-          'Bright appearance',
-          'Pidangan caang',
-        ),
+        'sub': _tr('Tampilan terang', 'Bright appearance', 'Pidangan caang'),
         'icon': Icons.wb_sunny_outlined,
       },
       {
@@ -770,46 +771,52 @@ class _ProfilePageState extends State<ProfilePage> {
                 ...daftarTema.map((item) {
                   final nama = item['label'] as String;
                   final aktif = UserProfileData.currentUser.theme == nama;
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundColor: aktif
-                          ? Colors.orange
-                          : Colors.orange.shade50,
-                      child: Icon(
-                        item['icon'] as IconData,
-                        color: aktif ? Colors.white : Colors.orange,
-                        size: 20,
-                      ),
-                    ),
-                    title: Text(
-                      nama,
-                      style: TextStyle(
-                        fontWeight: aktif ? FontWeight.bold : FontWeight.w500,
-                        fontSize: 14,
-                        color: textColor,
-                      ),
-                    ),
-                    subtitle: Text(
-                      item['sub'] as String,
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    trailing: aktif
-                        ? const Icon(Icons.check_circle, color: Colors.orange)
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        UserProfileData.currentUser.theme = nama;
-                      });
-                      Navigator.pop(sheetContext);
-                      _tampilkanNotifikasiSukses(
-                        _tr(
-                          'Tema diubah ke $nama',
-                          'Theme changed to $nama',
-                          'Téma diganti ka $nama',
+                  return Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        backgroundColor: aktif
+                            ? Colors.orange
+                            : Colors.orange.shade50,
+                        child: Icon(
+                          item['icon'] as IconData,
+                          color: aktif ? Colors.white : Colors.orange,
+                          size: 20,
                         ),
-                      );
-                    },
+                      ),
+                      title: Text(
+                        nama,
+                        style: TextStyle(
+                          fontWeight: aktif ? FontWeight.bold : FontWeight.w500,
+                          fontSize: 14,
+                          color: textColor,
+                        ),
+                      ),
+                      subtitle: Text(
+                        item['sub'] as String,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                      trailing: aktif
+                          ? const Icon(Icons.check_circle, color: Colors.orange)
+                          : null,
+                      onTap: () {
+                        setState(() {
+                          UserProfileData.currentUser.theme = nama;
+                        });
+                        Navigator.pop(sheetContext);
+                        _tampilkanNotifikasiSukses(
+                          _tr(
+                            'Tema diubah ke $nama',
+                            'Theme changed to $nama',
+                            'Téma diganti ka $nama',
+                          ),
+                        );
+                      },
+                    ),
                   );
                 }),
               ],
@@ -1258,8 +1265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 );
-                Navigator.pushAndRemoveUntil(
-                  context,
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const LoginPage()),
                   (route) => false,
                 );
@@ -1292,7 +1298,11 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           title: Row(
             children: [
-              const Icon(Icons.delete_forever_outlined, color: Colors.red, size: 22),
+              const Icon(
+                Icons.delete_forever_outlined,
+                color: Colors.red,
+                size: 22,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -1350,8 +1360,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 );
-                Navigator.pushAndRemoveUntil(
-                  context,
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const LoginPage()),
                   (route) => false,
                 );
@@ -1375,13 +1384,14 @@ class _ProfilePageState extends State<ProfilePage> {
     final user = UserProfileData.currentUser;
     final bgColor = _isDark ? const Color(0xFF121212) : Colors.white;
     final cardColor = _isDark ? const Color(0xFF1E1E1E) : Colors.white;
-    final subBoxColor =
-        _isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade100;
+    final subBoxColor = _isDark
+        ? const Color(0xFF2A2A2A)
+        : Colors.grey.shade100;
     final textColor = _isDark ? Colors.white : Colors.black87;
-    final borderColor =
-        _isDark ? Colors.grey.shade800 : Colors.grey.shade200;
-    final shadowColor =
-        _isDark ? Colors.black.withValues(alpha: 0.35) : Colors.grey.shade200;
+    final borderColor = _isDark ? Colors.grey.shade800 : Colors.grey.shade200;
+    final shadowColor = _isDark
+        ? Colors.black.withValues(alpha: 0.35)
+        : Colors.grey.shade200;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -1507,7 +1517,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     decoration: BoxDecoration(
                                       color: _isDark
-                                          ? Colors.orange.withValues(alpha: 0.15)
+                                          ? Colors.orange.withValues(
+                                              alpha: 0.15,
+                                            )
                                           : Colors.orange.shade50,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -1632,7 +1644,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       iconColor: Colors.teal,
                       bgColor: Colors.teal.shade50,
                       value: user.favoriteCategory,
-                      label: _tr('Selera Utama', 'Top Craving', 'Karesep Utama'),
+                      label: _tr(
+                        'Selera Utama',
+                        'Top Craving',
+                        'Karesep Utama',
+                      ),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -1649,13 +1665,56 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 22),
 
+              Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.people_outline),
+                      title: const Text('Teman kuliner'),
+                      subtitle: const Text(
+                        'Daftar teman dan rekomendasi teman',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => const FriendsPage(),
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.add_location_alt_outlined),
+                      title: const Text('Ajukan tempat makan'),
+                      subtitle: const Text(
+                        'Rekomendasikan tempat untuk ditinjau admin',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => const PlaceFormPage(),
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.admin_panel_settings_outlined),
+                      title: const Text('Kelola tempat makan'),
+                      subtitle: const Text('Katalog dan persetujuan pengajuan'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => const AdminPage(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
               // 4. Keamanan Akun (Account Security)
               Text(
-                _tr(
-                  'Keamanan Akun',
-                  'Account Security',
-                  'Kaamanan Akun',
-                ),
+                _tr('Keamanan Akun', 'Account Security', 'Kaamanan Akun'),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -1981,62 +2040,65 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ],
                 ),
-                child: ListTile(
-                  onTap: _konfirmasiClearCache,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 4,
-                  ),
-                  leading: Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: _isDark
-                          ? Colors.orange.withValues(alpha: 0.15)
-                          : Colors.orange.shade50,
-                      borderRadius: BorderRadius.circular(10),
+                child: Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    onTap: _konfirmasiClearCache,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 4,
                     ),
-                    child: const Icon(
-                      Icons.cleaning_services_outlined,
-                      color: Colors.orange,
-                      size: 20,
+                    leading: Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: _isDark
+                            ? Colors.orange.withValues(alpha: 0.15)
+                            : Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.cleaning_services_outlined,
+                        color: Colors.orange,
+                        size: 20,
+                      ),
                     ),
-                  ),
-                  title: Text(
-                    'Clear Cache',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                      color: textColor,
-                    ),
-                  ),
-                  subtitle: Text(
-                    _tr(
-                      'Hapus data gambar & pencarian sementara',
-                      'Delete temporary image & search data',
-                      'Hapus data gambar & pilarian saheulaanan',
-                    ),
-                    style: const TextStyle(color: Colors.grey, fontSize: 11),
-                  ),
-                  trailing: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _cacheSize == '0.0 MB'
-                          ? Colors.green.shade50
-                          : Colors.orange.shade50,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      _cacheSize,
+                    title: Text(
+                      'Clear Cache',
                       style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                        color: textColor,
+                      ),
+                    ),
+                    subtitle: Text(
+                      _tr(
+                        'Hapus data gambar & pencarian sementara',
+                        'Delete temporary image & search data',
+                        'Hapus data gambar & pilarian saheulaanan',
+                      ),
+                      style: const TextStyle(color: Colors.grey, fontSize: 11),
+                    ),
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
                         color: _cacheSize == '0.0 MB'
-                            ? Colors.green.shade700
-                            : Colors.orange.shade800,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
+                            ? Colors.green.shade50
+                            : Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        _cacheSize,
+                        style: TextStyle(
+                          color: _cacheSize == '0.0 MB'
+                              ? Colors.green.shade700
+                              : Colors.orange.shade800,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                        ),
                       ),
                     ),
                   ),
@@ -2112,10 +2174,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }) {
     final cardColor = _isDark ? const Color(0xFF1E1E1E) : Colors.white;
     final textColor = _isDark ? Colors.white : Colors.black87;
-    final borderColor =
-        _isDark ? Colors.grey.shade800 : Colors.grey.shade200;
-    final shadowColor =
-        _isDark ? Colors.black.withValues(alpha: 0.35) : Colors.grey.shade200;
+    final borderColor = _isDark ? Colors.grey.shade800 : Colors.grey.shade200;
+    final shadowColor = _isDark
+        ? Colors.black.withValues(alpha: 0.35)
+        : Colors.grey.shade200;
 
     return GestureDetector(
       onTap: onTap,
@@ -2172,33 +2234,36 @@ class _ProfilePageState extends State<ProfilePage> {
     required VoidCallback onTap,
   }) {
     final textColor = _isDark ? Colors.white : Colors.black87;
-    return ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-      leading: Container(
-        width: 38,
-        height: 38,
-        decoration: BoxDecoration(
-          color: _isDark
-              ? Colors.orange.withValues(alpha: 0.15)
-              : Colors.orange.shade50,
-          borderRadius: BorderRadius.circular(10),
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        leading: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: _isDark
+                ? Colors.orange.withValues(alpha: 0.15)
+                : Colors.orange.shade50,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: Colors.orange, size: 20),
         ),
-        child: Icon(icon, color: Colors.orange, size: 20),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-          color: textColor,
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            color: textColor,
+          ),
         ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Colors.grey, fontSize: 11),
+        ),
+        trailing: const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
       ),
-      subtitle: Text(
-        subtitle,
-        style: const TextStyle(color: Colors.grey, fontSize: 11),
-      ),
-      trailing: const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
     );
   }
 
@@ -2210,36 +2275,39 @@ class _ProfilePageState extends State<ProfilePage> {
     required ValueChanged<bool> onChanged,
   }) {
     final textColor = _isDark ? Colors.white : Colors.black87;
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-      leading: Container(
-        width: 38,
-        height: 38,
-        decoration: BoxDecoration(
-          color: _isDark
-              ? Colors.orange.withValues(alpha: 0.15)
-              : Colors.orange.shade50,
-          borderRadius: BorderRadius.circular(10),
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        leading: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: _isDark
+                ? Colors.orange.withValues(alpha: 0.15)
+                : Colors.orange.shade50,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: Colors.orange, size: 20),
         ),
-        child: Icon(icon, color: Colors.orange, size: 20),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-          color: textColor,
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            color: textColor,
+          ),
         ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: const TextStyle(color: Colors.grey, fontSize: 11),
-      ),
-      trailing: Switch(
-        value: value,
-        activeThumbColor: Colors.white,
-        activeTrackColor: Colors.orange,
-        onChanged: onChanged,
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Colors.grey, fontSize: 11),
+        ),
+        trailing: Switch(
+          value: value,
+          activeThumbColor: Colors.white,
+          activeTrackColor: Colors.orange,
+          onChanged: onChanged,
+        ),
       ),
     );
   }
@@ -2250,8 +2318,7 @@ class _ProfilePageState extends State<ProfilePage> {
     Widget? suffixIcon,
   }) {
     final fillColor = _isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade100;
-    final borderColor =
-        _isDark ? Colors.grey.shade700 : Colors.grey.shade300;
+    final borderColor = _isDark ? Colors.grey.shade700 : Colors.grey.shade300;
     return InputDecoration(
       hintText: hintText,
       hintStyle: const TextStyle(color: Colors.grey, fontSize: 12),

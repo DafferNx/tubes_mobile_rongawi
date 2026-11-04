@@ -56,17 +56,15 @@ class UserProfileData {
     required this.fullName,
     required this.email,
     required this.phone,
-    String password = 'bandung123',
+    this._password = 'bandung123',
     required this.location,
     required this.bio,
     required this.favoriteCategory,
     required this.avatarUrl,
     this.uploadedFileName,
-    String language = 'Indonesia',
-    String theme = 'Light',
-  }) : _password = password,
-       _language = language,
-       _theme = theme;
+    this._language = 'Indonesia',
+    this._theme = 'Light',
+  });
 
   /// State global sederhana agar perubahan profil/keamanan tersimpan selama aplikasi berjalan
   static UserProfileData currentUser = UserProfileData(
@@ -235,10 +233,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       color: Colors.orange.shade50,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
-                      Icons.link,
-                      color: Colors.orange,
-                    ),
+                    child: const Icon(Icons.link, color: Colors.orange),
                   ),
                   title: const Text(
                     'Masukkan Link / URL Foto Sendiri',
@@ -357,10 +352,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text(
-                'Batal',
-                style: TextStyle(color: Colors.grey),
-              ),
+              child: const Text('Batal', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -438,8 +430,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final bgColor = isDark ? const Color(0xFF121212) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
     final fieldFill = isDark ? const Color(0xFF1E1E1E) : Colors.grey.shade100;
-    final borderColor =
-        isDark ? Colors.grey.shade800 : Colors.grey.shade300;
+    final borderColor = isDark ? Colors.grey.shade800 : Colors.grey.shade300;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -467,7 +458,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 112),
           child: Form(
             key: _formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -510,17 +501,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (context, error, stackTrace) {
-                                          return Container(
-                                            width: 96,
-                                            height: 96,
-                                            color: Colors.orange.shade50,
-                                            child: const Icon(
-                                              Icons.person,
-                                              size: 48,
-                                              color: Colors.orange,
-                                            ),
-                                          );
-                                        },
+                                              return Container(
+                                                width: 96,
+                                                height: 96,
+                                                color: Colors.orange.shade50,
+                                                child: const Icon(
+                                                  Icons.person,
+                                                  size: 48,
+                                                  color: Colors.orange,
+                                                ),
+                                              );
+                                            },
                                       ),
                               ),
                             ),
@@ -557,7 +548,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                 // 2. Form Informasi Profil (Tanpa Email & Telepon)
                 Text(
-                  tr('Informasi Profil', 'Profile Information', 'Inpormasi Profil'),
+                  tr(
+                    'Informasi Profil',
+                    'Profile Information',
+                    'Inpormasi Profil',
+                  ),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -638,7 +633,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               value: lokasi,
                               child: Text(
                                 '$lokasi, Bandung',
-                                style: TextStyle(fontSize: 14, color: textColor),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: textColor,
+                                ),
                               ),
                             );
                           }).toList(),
@@ -727,7 +725,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     onPressed: _simpanProfil,
                     child: Text(
-                      tr('Simpan Perubahan', 'Save Changes', 'Simpen Parobahan'),
+                      tr(
+                        'Simpan Perubahan',
+                        'Save Changes',
+                        'Simpen Parobahan',
+                      ),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
@@ -783,8 +785,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }) {
     final isDark = UserProfileData.currentUser.isDark;
     final fillColor = isDark ? const Color(0xFF1E1E1E) : Colors.grey.shade100;
-    final borderColor =
-        isDark ? Colors.grey.shade800 : Colors.grey.shade300;
+    final borderColor = isDark ? Colors.grey.shade800 : Colors.grey.shade300;
 
     return InputDecoration(
       hintText: hintText,

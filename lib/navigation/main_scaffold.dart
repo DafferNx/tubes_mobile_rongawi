@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../features/favorites/favorites_page.dart';
+import '../data/dummy_restaurants.dart';
 import '../features/home/home_page.dart';
 import '../features/maps/maps_page.dart';
 import '../features/profile/edit_profile_page.dart';
@@ -12,12 +13,38 @@ import '../features/search/search_page.dart';
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
 
+  static void showRoute(BuildContext context, Restaurant place) {
+    final shell = context.findAncestorStateOfType<_MainScaffoldState>();
+    if (shell == null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute<void>(
+          builder: (_) => MapsPage(initialRestaurant: place),
+        ),
+      );
+      return;
+    }
+    shell._showRoute(place);
+  }
+
   @override
   State<MainScaffold> createState() => _MainScaffoldState();
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0;
+  Restaurant? _mapDestination;
+  final _navigatorKeys = List.generate(5, (_) => GlobalKey<NavigatorState>());
+  final _visitedTabs = <int>{0};
+
+  void _showRoute(Restaurant place) {
+    setState(() {
+      _mapDestination = place;
+      _navigatorKeys[2] = GlobalKey<NavigatorState>();
+      _selectedIndex = 2;
+      _visitedTabs.add(2);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +52,14 @@ class _MainScaffoldState extends State<MainScaffold> {
       valueListenable: UserProfileData.settingsNotifier,
       builder: (context, _, _) {
         final isDark = UserProfileData.isDarkMode;
-        final lang = UserProfileData.currentUser.language;
 
         // Daftar 5 Halaman Utama sesuai BottomNavigationBar (Modul 6.2.3.2)
-        final List<Widget> pages = [
-          HomePage(key: ValueKey('home_${lang}_$isDark')), // Bagian Orang 1
-          SearchPage(key: ValueKey('search_${lang}_$isDark')), // Bagian Orang 1
-          MapsPage(key: ValueKey('maps_${lang}_$isDark')), // Bagian Orang 3
-          FavoritesPage(key: ValueKey('fav_${lang}_$isDark')), // Bagian Orang 4
-          ProfilePage(key: ValueKey('prof_${lang}_$isDark')), // Bagian Orang 5
+        final pages = [
+          HomePage(),
+          SearchPage(),
+          MapsPage(initialRestaurant: _mapDestination),
+          FavoritesPage(),
+          ProfilePage(),
         ];
 
         final navItems = [
@@ -72,7 +98,25 @@ class _MainScaffoldState extends State<MainScaffold> {
             children: [
               // 1. Konten Halaman Utama (Tanpa animasi perpindahan page)
               Positioned.fill(
-                child: pages[_selectedIndex],
+                child: IndexedStack(
+                  index: _selectedIndex,
+                  children: List.generate(pages.length, (index) {
+                    if (!_visitedTabs.contains(index)) {
+                      return const SizedBox.shrink();
+                    }
+                    return NavigatorPopHandler<Object?>(
+                      enabled: _selectedIndex == index,
+                      onPopWithResult: (result) =>
+                          _navigatorKeys[index].currentState!.pop(result),
+                      child: Navigator(
+                        key: _navigatorKeys[index],
+                        onGenerateRoute: (_) => MaterialPageRoute<void>(
+                          builder: (_) => pages[index],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
               ),
 
               // 2. Floating Navbar Semi-Transparan dengan Animasi Sliding Pill
@@ -108,7 +152,8 @@ class _MainScaffoldState extends State<MainScaffold> {
                           ),
                           decoration: BoxDecoration(
                             color: isDark
-                                ? const Color(0xFF1E1E1E).withValues(alpha: 0.75)
+                                ? const Color(0xFF1E1E1E)
+                                      .withValues(alpha: 0.75)
                                 : Colors.white.withValues(alpha: 0.78),
                             borderRadius: BorderRadius.circular(30),
                             border: Border.all(
@@ -160,29 +205,33 @@ class _MainScaffoldState extends State<MainScaffold> {
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
-                                    children: List.generate(
-                                      navItems.length,
-                                      (index) {
-                                        final item = navItems[index];
-                                        final isSelected =
-                                            _selectedIndex == index;
-                                        return Expanded(
-                                          child: _buildAnimatedNavItem(
-                                            item: item,
-                                            isSelected: isSelected,
-                                            isDark: isDark,
-                                            onTap: () {
-                                              if (_selectedIndex == index) {
-                                                return;
-                                              }
-                                              setState(() {
-                                                _selectedIndex = index;
-                                              });
-                                            },
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                    children: List.generate(navItems.length, (
+                                      index,
+                                    ) {
+                                      final item = navItems[index];
+                                      final isSelected =
+                                          _selectedIndex == index;
+                                      return Expanded(
+                                        child: _buildAnimatedNavItem(
+                                          item: item,
+                                          isSelected: isSelected,
+                                          isDark: isDark,
+                                          onTap: () {
+                                            if (_selectedIndex == index) {
+                                              _navigatorKeys[index].currentState
+                                                  ?.popUntil(
+                                                    (route) => route.isFirst,
+                                                  );
+                                              return;
+                                            }
+                                            setState(() {
+                                              _selectedIndex = index;
+                                              _visitedTabs.add(index);
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    }),
                                   ),
                                 ],
                               );
