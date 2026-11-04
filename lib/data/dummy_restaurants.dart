@@ -50,11 +50,10 @@ final List<Restaurant> dummyRestaurants = [
     location: 'Dago',
     distance: '1.2 km',
     rating: 4.8,
-    imageUrl: 'https://picsum.photos/id/292/400/300',
+    imageUrl: 'assets/images/image_07.jpg',
     address: 'Jl. Ir. H. Juanda No. 112, Dago, Bandung',
     openHours: '10.00 - 22.00 WIB',
-    description:
-        'Seblak khas Bandung dengan kuah kencur pedas dan pilihan topping lengkap.',
+    description: 'Seblak khas Bandung dengan kuah kencur pedas dan pilihan topping lengkap.',
   ),
   const Restaurant(
     name: 'Bakso Cuanki Serayu',
@@ -63,11 +62,10 @@ final List<Restaurant> dummyRestaurants = [
     location: 'Braga',
     distance: '1.8 km',
     rating: 4.9,
-    imageUrl: 'https://picsum.photos/id/488/400/300',
+    imageUrl: 'assets/images/image_11.jpg',
     address: 'Jl. Serayu No. 2, Cihapit, Bandung',
     openHours: '11.00 - 19.00 WIB',
-    description:
-        'Bakso cuanki legendaris di Bandung dengan kuah kaldu gurih dan batagor renyah.',
+    description: 'Bakso cuanki legendaris di Bandung dengan kuah kaldu gurih dan batagor renyah.',
   ),
   const Restaurant(
     name: 'Kopi Toko Djawa',
@@ -76,11 +74,10 @@ final List<Restaurant> dummyRestaurants = [
     location: 'Braga',
     distance: '2.4 km',
     rating: 4.7,
-    imageUrl: 'https://picsum.photos/id/425/400/300',
+    imageUrl: 'assets/images/image_08.jpg',
     address: 'Jl. Braga No. 81, Braga, Bandung',
     openHours: '08.00 - 22.00 WIB',
-    description:
-        'Kedai kopi populer di Jalan Braga dengan suasana klasik dan es kopi susu gula aren.',
+    description: 'Kedai kopi populer di Jalan Braga dengan suasana klasik dan es kopi susu gula aren.',
   ),
   const Restaurant(
     name: 'Mie Ayam Cipaganti',
@@ -89,11 +86,10 @@ final List<Restaurant> dummyRestaurants = [
     location: 'Dipatiukur',
     distance: '2.0 km',
     rating: 4.6,
-    imageUrl: 'https://picsum.photos/id/493/400/300',
+    imageUrl: 'assets/images/image_12.jpg',
     address: 'Jl. Cipaganti No. 85, Bandung',
     openHours: '08.00 - 17.00 WIB',
-    description:
-        'Mie yamin manis dan asin khas Bandung lengkap dengan pangsit rebus dan bakso.',
+    description: 'Mie yamin manis dan asin khas Bandung lengkap dengan pangsit rebus dan bakso.',
   ),
   const Restaurant(
     name: 'Warung Nasi Ibu Imas',
@@ -102,11 +98,10 @@ final List<Restaurant> dummyRestaurants = [
     location: 'Buahbatu',
     distance: '3.1 km',
     rating: 4.8,
-    imageUrl: 'https://picsum.photos/id/429/400/300',
+    imageUrl: 'assets/images/image_09.jpg',
     address: 'Jl. Balonggede No. 67, Bandung',
     openHours: '07.00 - 23.00 WIB',
-    description:
-        'Rumah makan Sunda populer dengan ayam bakar, karedok leunca, dan sambal dadak.',
+    description: 'Rumah makan Sunda populer dengan ayam bakar, karedok leunca, dan sambal dadak.',
   ),
   const Restaurant(
     name: 'Sejiwa Coffee',
@@ -115,11 +110,10 @@ final List<Restaurant> dummyRestaurants = [
     location: 'Dipatiukur',
     distance: '0.9 km',
     rating: 4.5,
-    imageUrl: 'https://picsum.photos/id/431/400/300',
+    imageUrl: 'assets/images/image_10.jpg',
     address: 'Jl. Progo No. 15, Bandung',
     openHours: '07.00 - 23.00 WIB',
-    description:
-        'Tempat nongkrong nyaman di Bandung dengan kopi spesialti dan berbagai pastry.',
+    description: 'Tempat nongkrong nyaman di Bandung dengan kopi spesialti dan berbagai pastry.',
   ),
 ];
 

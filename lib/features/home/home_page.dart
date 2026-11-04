@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../navigation/main_scaffold.dart';
+
 import '../../core/widgets/food_card.dart';
 import '../../data/dummy_restaurants.dart';
 import '../profile/edit_profile_page.dart';
-import '../search/filter_page.dart';
-import '../search/search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -214,12 +214,7 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SearchPage(),
-                          ),
-                        );
+                        MainScaffold.showSearch(context);
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -248,10 +243,7 @@ class _HomePageState extends State<HomePage> {
               // 3. Search Bar dengan Tombol Filter di Kanan (Sesuai Referensi Desain)
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SearchPage()),
-                  );
+                  MainScaffold.showSearch(context);
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -282,12 +274,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const FilterPage(),
-                            ),
-                          );
+                          MainScaffold.showSearch(context, openFilter: true);
                         },
                         child: Icon(Icons.tune, color: textColor, size: 20),
                       ),
@@ -302,10 +289,7 @@ class _HomePageState extends State<HomePage> {
                 title: UserProfileData.tr('Kategori', 'Categories', 'Kategori'),
                 textColor: textColor,
                 onTapViewAll: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SearchPage()),
-                  );
+                  MainScaffold.showSearch(context);
                 },
               ),
               const SizedBox(height: 12),
@@ -378,13 +362,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 textColor: textColor,
                 onTapViewAll: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          SearchPage(initialCategory: selectedCategory),
-                    ),
-                  );
+                  MainScaffold.showSearch(context, category: selectedCategory);
                 },
               ),
               const SizedBox(height: 12),
@@ -415,13 +393,7 @@ class _HomePageState extends State<HomePage> {
                     : '${UserProfileData.tr('Rekomendasi', 'Recommended', 'Rekomendasi')} $selectedCategory',
                 textColor: textColor,
                 onTapViewAll: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          SearchPage(initialCategory: selectedCategory),
-                    ),
-                  );
+                  MainScaffold.showSearch(context, category: selectedCategory);
                 },
               ),
               const SizedBox(height: 12),

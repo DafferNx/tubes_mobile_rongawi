@@ -34,7 +34,7 @@ class MenuDetailPage extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Image.network(
+                Image.asset(
                   image,
                   width: double.infinity,
                   height: 320,

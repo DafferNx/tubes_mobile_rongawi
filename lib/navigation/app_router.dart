@@ -24,8 +24,7 @@ class AppRouter {
     '/menu-detail': (context) => const MenuDetailPage(
       name: 'Seblak Komplit Special',
       price: 'Rp 25.000',
-      image:
-          'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500',
+      image: 'assets/images/image_05.jpg',
       description:
           'Seblak dengan isian kerupuk, bakso, sosis, ceker, dan telur.',
     ),

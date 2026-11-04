@@ -94,8 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final bgColor = _isDark ? const Color(0xFF121212) : Colors.white;
     final textColor = _isDark ? Colors.white : Colors.black87;
     final fieldBg = _isDark ? const Color(0xFF1E1E1E) : Colors.grey.shade100;
-    final borderColor =
-        _isDark ? Colors.grey.shade700 : Colors.grey.shade300;
+    final borderColor = _isDark ? Colors.grey.shade700 : Colors.grey.shade300;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -523,8 +522,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 20),
 
                 // 10. Tautan Kembali ke Login
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 4,
+                  runSpacing: 8,
                   children: [
                     Text(
                       _tr(
@@ -572,8 +574,7 @@ class _RegisterPageState extends State<RegisterPage> {
     Widget? suffixIcon,
   }) {
     final fillColor = _isDark ? const Color(0xFF1E1E1E) : Colors.grey.shade100;
-    final borderColor =
-        _isDark ? Colors.grey.shade700 : Colors.grey.shade300;
+    final borderColor = _isDark ? Colors.grey.shade700 : Colors.grey.shade300;
 
     return InputDecoration(
       hintText: hintText,

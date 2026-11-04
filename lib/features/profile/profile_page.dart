@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../navigation/main_scaffold.dart';
+
 import '../community/demo_pages.dart';
 
 import '../auth/login_page.dart';
-import '../favorites/favorites_page.dart';
 import '../reviews/reviews_page.dart';
-import '../search/search_page.dart';
 import 'edit_profile_page.dart';
 
 /// Halaman Profile Pengguna (Bagian Orang 5)
@@ -621,6 +621,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final textColor = _isDark ? Colors.white : Colors.black87;
 
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       backgroundColor: sheetBg,
       shape: const RoundedRectangleBorder(
@@ -735,6 +736,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final textColor = _isDark ? Colors.white : Colors.black87;
 
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       backgroundColor: sheetBg,
       shape: const RoundedRectangleBorder(
@@ -885,6 +887,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final borderColor = _isDark ? Colors.grey.shade800 : Colors.grey.shade200;
 
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: sheetBg,
@@ -998,6 +1001,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final borderColor = _isDark ? Colors.grey.shade800 : Colors.grey.shade200;
 
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: sheetBg,
@@ -1466,7 +1470,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       color: Colors.orange,
                                     ),
                                   )
-                                : Image.network(
+                                : Image.asset(
                                     user.avatarUrl,
                                     width: 72,
                                     height: 72,
@@ -1510,37 +1514,41 @@ class _ProfilePageState extends State<ProfilePage> {
                               const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _isDark
-                                          ? Colors.orange.withValues(
-                                              alpha: 0.15,
-                                            )
-                                          : Colors.orange.shade50,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.location_on,
-                                          color: Colors.orange,
-                                          size: 13,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '${user.location}, Bandung',
-                                          style: const TextStyle(
+                                  Flexible(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: _isDark
+                                            ? Colors.orange.withValues(
+                                                alpha: 0.15,
+                                              )
+                                            : Colors.orange.shade50,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.location_on,
                                             color: Colors.orange,
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w600,
+                                            size: 13,
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(width: 4),
+                                          Flexible(
+                                            child: Text(
+                                              '${user.location}, Bandung',
+                                              style: const TextStyle(
+                                                color: Colors.orange,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -1610,12 +1618,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       value: '6',
                       label: _tr('Favorit', 'Favorites', 'Karesep'),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const FavoritesPage(),
-                          ),
-                        );
+                        MainScaffold.showFavorites(context);
                       },
                     ),
                   ),
@@ -1650,13 +1653,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         'Karesep Utama',
                       ),
                       onTap: () {
-                        Navigator.push(
+                        MainScaffold.showSearch(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => SearchPage(
-                              initialCategory: user.favoriteCategory,
-                            ),
-                          ),
+                          category: user.favoriteCategory,
                         );
                       },
                     ),
